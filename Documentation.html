@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Learn Batch Documentation</title>
+  <style>
+    body{margin:auto;max-width:920px;padding:35px 20px;background:#071008;color:#d9e6d8;font:17px/1.65 Consolas,monospace}
+    h1,h2,h3{color:#a7ee72}
+    h1{border-bottom:2px solid #a7ee72;padding-bottom:13px}
+    h2{margin-top:38px}
+    a{color:#a7ee72}
+    .box{border:1px solid #315c34;background:#0d1b0e;padding:16px;margin:18px 0}
+    code{color:#ffd36a}
+    details{margin:18px 0;border:1px solid #315c34;background:#0d1b0e;padding:10px 14px}
+    summary{cursor:pointer;font-weight:700}
+    ul{padding-left:1.1rem}
+  </style>
+</head>
+<body>
+  <h1>LEARN BATCH — Documentation</h1>
+  <p>The companion handbook for this offline Batch learning package. It intentionally has the spirit of CD-ROM software documentation: durable local files, straightforward navigation, no installation, tracking, or internet required.</p>
+  <div class="box"><b>OPEN THE COURSE →</b><br><a href="Learn Batch.html">Learn Batch.html</a></div>
+
+  <h2>Who made it?</h2>
+  <p>This package was assembled for the LearnBatch project.</p>
+  <p>Creator: Pixelillo / LearnBatch<br>GitHub: https://github.com/pixelgunerd3YT/LearnBatch<br></p>
+  <p>This is an educational reference. For exact behavior on the current Windows installation, run <code>help</code>, <code>help command</code>, or <code>command /?</code>.</p>
+
+  <h2>License</h2>
+  <p>This project is released under <a href="https://creativecommons.org/public-domain/cc0/">CC0 1.0 Universal</a>.</p>
+  <p>To the extent possible under law, the author has waived all copyright and related rights in this work. You are free to copy, modify, redistribute, and use it for any purpose, including commercial use, without asking permission.</p>
+  <p>If you want a more traditional attribution-based option later, you can switch to a different license, but CC0 fits the current goal of maximum openness.</p>
+
+  <h2>How to use the course</h2>
+  <ol>
+    <li>Open <a href="Learn Batch.html">Learn Batch.html</a> in a browser.</li>
+    <li>Read Start here, then complete Basic, Advanced, and Expert in order.</li>
+    <li>Copy examples into a test folder, save as <code>.cmd</code>, and run them from Command Prompt.</li>
+    <li>Use the filter bar in the course to locate a command or concept.</li>
+  </ol>
+  <div class="box"><b>Safety:</b> Batch scripts can alter files, launch programs, and administer Windows. Test on disposable data first, and read <code>/?</code> before adapting destructive or administrative commands.</div>
+
+  <h2>Pages and sections</h2>
+  <ul>
+    <li><b>Documentation.html</b> — this orientation page: authorship, GitHub placeholder, use instructions, layout, and maintenance.</li>
+    <li><b>Learn Batch.html</b> — the main searchable offline field manual.</li>
+    <li><b>Start here</b> — creating/running scripts and essential safety.</li>
+    <li><b>01 / Basic</b> — syntax, variables, conditions, paths, arguments, and loops.</li>
+    <li><b>02 / Advanced</b> — FOR /F, delayed expansion, streams, error levels, and system tooling.</li>
+    <li><b>03 / Expert</b> — structure, subroutines, parser escaping, compatibility, auditing.</li>
+    <li><b>Command index, Recipes, Troubleshooting</b> — fast reference and practical patterns.</li>
+  </ul>
+
+  <details>
+    <summary>Spoiler alert: answers to the exam challenges</summary>
+    <p>These answers are written as a study aid. The course page accepts the first answer form shown for each question, but these alternatives are useful if you want a broader set of acceptable wording.</p>
+    <h3>Exam 01 — Easy</h3>
+    <ul>
+      <li>E01 — <code>setlocal</code> / <code>local scope</code> / <code>scope</code></li>
+      <li>E02 — <code>cd</code> / <code>chdir</code> / <code>change directory</code></li>
+      <li>E03 — <code>%name%</code> / <code>%var%</code> / <code>variable expansion</code></li>
+      <li>E04 — <code>pause</code> / <code>wait</code> / <code>hold execution</code></li>
+      <li>E05 — <code>mkdir</code> / <code>md</code> / <code>create directory</code></li>
+    </ul>
+    <h3>Exam 02 — Advanced</h3>
+    <ul>
+      <li>A01 — <code>@echo off</code> / <code>echo off</code> / <code>silent mode</code></li>
+      <li>A02 — <code>||</code> / <code>or else</code> / <code>failure chain</code></li>
+      <li>A03 — <code>%~dp0</code> / <code>script directory</code> / <code>batch file folder</code></li>
+      <li>A04 — <code>if exist</code> / <code>check exists</code> / <code>exist check</code></li>
+      <li>A05 — <code>goto</code> / <code>jump</code> / <code>label jump</code></li>
+    </ul>
+    <h3>Exam 03 — Expert</h3>
+    <ul>
+      <li>X01 — <code>set /p</code> / <code>prompt input</code> / <code>read input</code></li>
+      <li>X02 — <code>exit /b</code> / <code>return from batch</code> / <code>subroutine exit</code></li>
+      <li>X03 — <code>endlocal &amp; set</code> / <code>endlocal and set</code> / <code>return value</code></li>
+      <li>X04 — <code>setlocal EnableExtensions DisableDelayedExpansion</code> / <code>setlocal enableextensions disabledelayexpansion</code> / <code>extensions off delayed expansion</code></li>
+      <li>X05 — <code>!var!</code> / <code>delayed expansion variable</code> / <code>block variable</code></li>
+    </ul>
+    <h3>Exam 04 — Extreme</h3>
+    <ul>
+      <li>T01 — <code>%~1</code> / <code>first argument</code> / <code>first parameter</code></li>
+      <li>T02 — <code>for /f</code> / <code>for loop parse</code> / <code>line parser</code></li>
+      <li>T03 — <code>2&gt;&amp;1</code> / <code>merge stderr</code> / <code>stderr to stdout</code></li>
+      <li>T04 — <code>^</code> / <code>caret</code> / <code>escape character</code></li>
+      <li>T05 — <code>if errorlevel</code> / <code>check exit code</code> / <code>previous command status</code></li>
+    </ul>
+    <h3>Exam 05 — Extreme output questions</h3>
+    <ul>
+      <li>O01 — <code>2</code> / <code>the value after delayed expansion</code> / <code>the updated variable</code></li>
+      <li>O02 — <code>1</code> / <code>the old value because percent expansion happens early</code> / <code>the pre-parse value</code></li>
+      <li>O03 — <code>outer</code> / <code>the main script value</code> / <code>the unchanged variable</code></li>
+      <li>O04 — <code>green</code> / <code>the second token</code> / <code>the parsed field</code></li>
+      <li>O05 — <code>two</code> / <code>the second argument</code> / <code>the shifted parameter</code></li>
+    </ul>
+    <h3>Exam 06 — Extreme command questions</h3>
+    <ul>
+      <li>C01 — <code>mkdir Lab &amp; cd Lab &amp; type nul &gt; Hello.txt</code> / <code>md Lab &amp; cd Lab &amp; echo. &gt; Hello.txt</code> / <code>mkdir Lab &amp; cd Lab &amp; type nul &gt; Hello.txt</code></li>
+      <li>C02 — <code>mkdir Root &amp; cd Root &amp; mkdir Work &amp; cd Work &amp; type nul &gt; Hello.txt</code> / <code>md Root &amp; cd Root &amp; md Work &amp; cd Work &amp; echo. &gt; Hello.txt</code> / <code>mkdir Root &amp; cd Root &amp; mkdir Work &amp; cd Work &amp; type nul &gt; Hello.txt</code></li>
+      <li>C03 — <code>mkdir &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; type nul &gt; Hello.txt</code> / <code>md &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; echo. &gt; Hello.txt</code> / <code>mkdir &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; type nul &gt; Hello.txt</code></li>
+      <li>C04 — <code>mkdir Data &amp; cd Data &amp; echo ready &gt; Hello.txt</code> / <code>md Data &amp; cd Data &amp; echo ready &gt; Hello.txt</code> / <code>mkdir Data &amp; cd Data &amp; set /p =ready &lt; nul &gt; Hello.txt</code></li>
+      <li>C05 — <code>mkdir Temp &amp; cd Temp &amp; mkdir Inner &amp; cd Inner &amp; type nul &gt; Hello.txt</code> / <code>md Temp &amp; cd Temp &amp; md Inner &amp; cd Inner &amp; echo. &gt; Hello.txt</code> / <code>mkdir Temp &amp; cd Temp &amp; mkdir Inner &amp; cd Inner &amp; type nul &gt; Hello.txt</code></li>
+    </ul>
+  </details>
+
+  <h2>Offline design and maintenance</h2>
+  <p>Both documents embed their own styling; the course also embeds its small search filter. They work from a USB drive, archive, or share. Keep the two files together because they link to each other. Before publication, update authorship, GitHub, and licensing; test links after copying the folder; and state the Windows version tested for any new example.</p>
+  <p><a href="Learn Batch.html">← Back to the Batch field manual</a></p>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Learn Batch Documentation</title>
+  <style>
+    body{margin:auto;max-width:920px;padding:35px 20px;background:#071008;color:#d9e6d8;font:17px/1.65 Consolas,monospace}
+    h1,h2,h3{color:#a7ee72}
+    h1{border-bottom:2px solid #a7ee72;padding-bottom:13px}
+    h2{margin-top:38px}
+    a{color:#a7ee72}
+    .box{border:1px solid #315c34;background:#0d1b0e;padding:16px;margin:18px 0}
+    code{color:#ffd36a}
+    details{margin:18px 0;border:1px solid #315c34;background:#0d1b0e;padding:10px 14px}
+    summary{cursor:pointer;font-weight:700}
+    ul{padding-left:1.1rem}
+  </style>
+</head>
+<body>
+  <h1>LEARN BATCH — Documentation</h1>
+  <p>The companion handbook for this offline Batch learning package. It intentionally has the spirit of CD-ROM software documentation: durable local files, straightforward navigation, no installation, tracking, or internet required.</p>
+  <div class="box"><b>OPEN THE COURSE →</b><br><a href="Learn Batch.html">Learn Batch.html</a></div>
+
+  <h2>Who made it?</h2>
+  <p>This package was assembled for the LearnBatch project.</p>
+  <p>Creator: Pixelillo / LearnBatch<br>GitHub: https://github.com/pixelgunerd3YT/LearnBatch<br></p>
+  <p>This is an educational reference. For exact behavior on the current Windows installation, run <code>help</code>, <code>help command</code>, or <code>command /?</code>.</p>
+
+  <h2>License</h2>
+  <p>This project is released under <a href="https://creativecommons.org/public-domain/cc0/">CC0 1.0 Universal</a>.</p>
+  <p>To the extent possible under law, the author has waived all copyright and related rights in this work. You are free to copy, modify, redistribute, and use it for any purpose, including commercial use, without asking permission.</p>
+  <p>If you want a more traditional attribution-based option later, you can switch to a different license, but CC0 fits the current goal of maximum openness.</p>
+
+  <h2>How to use the course</h2>
+  <ol>
+    <li>Open <a href="Learn Batch.html">Learn Batch.html</a> in a browser.</li>
+    <li>Read Start here, then complete Basic, Advanced, and Expert in order.</li>
+    <li>Copy examples into a test folder, save as <code>.cmd</code>, and run them from Command Prompt.</li>
+    <li>Use the filter bar in the course to locate a command or concept.</li>
+  </ol>
+  <div class="box"><b>Safety:</b> Batch scripts can alter files, launch programs, and administer Windows. Test on disposable data first, and read <code>/?</code> before adapting destructive or administrative commands.</div>
+
+  <h2>Pages and sections</h2>
+  <ul>
+    <li><b>Documentation.html</b> — this orientation page: authorship, GitHub placeholder, use instructions, layout, and maintenance.</li>
+    <li><b>Learn Batch.html</b> — the main searchable offline field manual.</li>
+    <li><b>Start here</b> — creating/running scripts and essential safety.</li>
+    <li><b>01 / Basic</b> — syntax, variables, conditions, paths, arguments, and loops.</li>
+    <li><b>02 / Advanced</b> — FOR /F, delayed expansion, streams, error levels, and system tooling.</li>
+    <li><b>03 / Expert</b> — structure, subroutines, parser escaping, compatibility, auditing.</li>
+    <li><b>Command index, Recipes, Troubleshooting</b> — fast reference and practical patterns.</li>
+  </ul>
+
+  <details>
+    <summary>Spoiler alert: answers to the exam challenges</summary>
+    <p>These answers are written as a study aid. The course page accepts the first answer form shown for each question, but these alternatives are useful if you want a broader set of acceptable wording.</p>
+    <h3>Exam 01 — Easy</h3>
+    <ul>
+      <li>E01 — <code>setlocal</code> / <code>local scope</code> / <code>scope</code></li>
+      <li>E02 — <code>cd</code> / <code>chdir</code> / <code>change directory</code></li>
+      <li>E03 — <code>%name%</code> / <code>%var%</code> / <code>variable expansion</code></li>
+      <li>E04 — <code>pause</code> / <code>wait</code> / <code>hold execution</code></li>
+      <li>E05 — <code>mkdir</code> / <code>md</code> / <code>create directory</code></li>
+    </ul>
+    <h3>Exam 02 — Advanced</h3>
+    <ul>
+      <li>A01 — <code>@echo off</code> / <code>echo off</code> / <code>silent mode</code></li>
+      <li>A02 — <code>||</code> / <code>or else</code> / <code>failure chain</code></li>
+      <li>A03 — <code>%~dp0</code> / <code>script directory</code> / <code>batch file folder</code></li>
+      <li>A04 — <code>if exist</code> / <code>check exists</code> / <code>exist check</code></li>
+      <li>A05 — <code>goto</code> / <code>jump</code> / <code>label jump</code></li>
+    </ul>
+    <h3>Exam 03 — Expert</h3>
+    <ul>
+      <li>X01 — <code>set /p</code> / <code>prompt input</code> / <code>read input</code></li>
+      <li>X02 — <code>exit /b</code> / <code>return from batch</code> / <code>subroutine exit</code></li>
+      <li>X03 — <code>endlocal &amp; set</code> / <code>endlocal and set</code> / <code>return value</code></li>
+      <li>X04 — <code>setlocal EnableExtensions DisableDelayedExpansion</code> / <code>setlocal enableextensions disabledelayexpansion</code> / <code>extensions off delayed expansion</code></li>
+      <li>X05 — <code>!var!</code> / <code>delayed expansion variable</code> / <code>block variable</code></li>
+    </ul>
+    <h3>Exam 04 — Extreme</h3>
+    <ul>
+      <li>T01 — <code>%~1</code> / <code>first argument</code> / <code>first parameter</code></li>
+      <li>T02 — <code>for /f</code> / <code>for loop parse</code> / <code>line parser</code></li>
+      <li>T03 — <code>2&gt;&amp;1</code> / <code>merge stderr</code> / <code>stderr to stdout</code></li>
+      <li>T04 — <code>^</code> / <code>caret</code> / <code>escape character</code></li>
+      <li>T05 — <code>if errorlevel</code> / <code>check exit code</code> / <code>previous command status</code></li>
+    </ul>
+    <h3>Exam 05 — Extreme output questions</h3>
+    <ul>
+      <li>O01 — <code>2</code> / <code>the value after delayed expansion</code> / <code>the updated variable</code></li>
+      <li>O02 — <code>1</code> / <code>the old value because percent expansion happens early</code> / <code>the pre-parse value</code></li>
+      <li>O03 — <code>outer</code> / <code>the main script value</code> / <code>the unchanged variable</code></li>
+      <li>O04 — <code>green</code> / <code>the second token</code> / <code>the parsed field</code></li>
+      <li>O05 — <code>two</code> / <code>the second argument</code> / <code>the shifted parameter</code></li>
+    </ul>
+    <h3>Exam 06 — Extreme command questions</h3>
+    <ul>
+      <li>C01 — <code>mkdir Lab &amp; cd Lab &amp; type nul &gt; Hello.txt</code> / <code>md Lab &amp; cd Lab &amp; echo. &gt; Hello.txt</code> / <code>mkdir Lab &amp; cd Lab &amp; type nul &gt; Hello.txt</code></li>
+      <li>C02 — <code>mkdir Root &amp; cd Root &amp; mkdir Work &amp; cd Work &amp; type nul &gt; Hello.txt</code> / <code>md Root &amp; cd Root &amp; md Work &amp; cd Work &amp; echo. &gt; Hello.txt</code> / <code>mkdir Root &amp; cd Root &amp; mkdir Work &amp; cd Work &amp; type nul &gt; Hello.txt</code></li>
+      <li>C03 — <code>mkdir &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; type nul &gt; Hello.txt</code> / <code>md &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; echo. &gt; Hello.txt</code> / <code>mkdir &quot;My Folder&quot; &amp; cd &quot;My Folder&quot; &amp; type nul &gt; Hello.txt</code></li>
+      <li>C04 — <code>mkdir Data &amp; cd Data &amp; echo ready &gt; Hello.txt</code> / <code>md Data &amp; cd Data &amp; echo ready &gt; Hello.txt</code> / <code>mkdir Data &amp; cd Data &amp; set /p =ready &lt; nul &gt; Hello.txt</code></li>
+      <li>C05 — <code>mkdir Temp &amp; cd Temp &amp; mkdir Inner &amp; cd Inner &amp; type nul &gt; Hello.txt</code> / <code>md Temp &amp; cd Temp &amp; md Inner &amp; cd Inner &amp; echo. &gt; Hello.txt</code> / <code>mkdir Temp &amp; cd Temp &amp; mkdir Inner &amp; cd Inner &amp; type nul &gt; Hello.txt</code></li>
+    </ul>
+  </details>
+
+  <h2>Offline design and maintenance</h2>
+  <p>Both documents embed their own styling; the course also embeds its small search filter. They work from a USB drive, archive, or share. Keep the two files together because they link to each other. Before publication, update authorship, GitHub, and licensing; test links after copying the folder; and state the Windows version tested for any new example.</p>
+  <p><a href="Learn Batch.html">← Back to the Batch field manual</a></p>
+</body>
+</html>
