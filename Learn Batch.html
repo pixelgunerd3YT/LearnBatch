@@ -1,0 +1,1332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="An offline, progressive field manual for Windows Batch and cmd.exe.">
+  <title>Learn Batch | Offline Field Manual</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #d8e6df;
+      --muted: #91aaa1;
+      --page: #07100e;
+      --panel: #0c1915;
+      --panel-2: #10251d;
+      --line: #24533d;
+      --lime: #a8ed83;
+      --cyan: #72d7dc;
+      --amber: #ffc96b;
+      --violet: #d8a5ff;
+      --danger: #ff9889;
+      --shadow: 0 16px 35px rgba(0, 0, 0, .28);
+      --mono: Consolas, "Cascadia Mono", "Courier New", monospace;
+      --sans: Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 0%, rgba(65, 139, 82, .15), transparent 25rem),
+        linear-gradient(145deg, #06100c, #091510 60%, #050806);
+      font: 16px/1.65 var(--sans);
+    }
+
+    a { color: var(--lime); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: #d0ffad; }
+    code, kbd { font-family: var(--mono); }
+    kbd { padding: .1em .35em; border: 1px solid #456251; border-radius: 4px; background: #0b1711; color: #e8f8df; }
+    h1, h2, h3, h4 { line-height: 1.16; }
+    h2 { margin: 0; color: #e8fae0; font-size: clamp(1.55rem, 3vw, 2.2rem); }
+    h3 { margin: 1.75rem 0 .55rem; color: var(--lime); font-size: 1.22rem; }
+    h4 { margin-bottom: .35rem; color: var(--cyan); }
+    p { margin: .7rem 0; }
+    ul, ol { padding-left: 1.25rem; }
+    li + li { margin-top: .35rem; }
+
+    .skip { position: absolute; left: -999px; top: auto; }
+    .skip:focus { left: 1rem; top: 1rem; z-index: 30; padding: .55rem .8rem; background: #fff; color: #000; }
+    .topline { min-height: 35px; padding: 7px max(18px, calc((100vw - 1380px) / 2)); color: #8cb59b; background: #030705; border-bottom: 1px solid #1e3b2d; font: 12px/1.4 var(--mono); }
+    .topline span { color: var(--lime); }
+    .hero { max-width: 1380px; margin: auto; padding: clamp(2rem, 6vw, 5rem) 24px 2.3rem; }
+    .eyebrow { margin: 0 0 .85rem; color: var(--cyan); font: 700 .73rem/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 900px; margin: 0; color: #f3fff0; font: 800 clamp(2.4rem, 7vw, 5.6rem)/.98 var(--mono); letter-spacing: -.075em; }
+    .hero > p:not(.eyebrow) { max-width: 760px; margin: 1.35rem 0 0; color: #b9cec0; font-size: clamp(1rem, 1.6vw, 1.2rem); }
+    .actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.45rem; }
+    .button, button { border: 1px solid #4f885f; border-radius: 7px; padding: .56rem .78rem; color: #eaffe2; background: #153722; font: 700 .82rem var(--sans); cursor: pointer; text-decoration: none; }
+    .button.secondary, button.secondary { border-color: #3d6150; color: #bed1c2; background: #0b1912; }
+    .button:hover, button:hover { background: #215432; color: #fff; }
+
+    .shell { display: grid; grid-template-columns: 278px minmax(0, 1fr); gap: 28px; max-width: 1380px; margin: 0 auto; padding: 0 24px 56px; }
+    .rail { align-self: start; position: sticky; top: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: rgba(7, 18, 13, .91); box-shadow: var(--shadow); backdrop-filter: blur(9px); }
+    .rail strong { display: block; margin-bottom: .75rem; color: #dfffd1; font: 700 .84rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .search { width: 100%; padding: .62rem .68rem; border: 1px solid #3c6c50; border-radius: 6px; color: #e8f6e4; background: #06100b; font: .88rem var(--mono); }
+    .search:focus { outline: 2px solid #6ccf90; outline-offset: 2px; }
+    #filter-result { min-height: 1.25em; margin: .5rem 0 1rem; color: var(--muted); font-size: .78rem; }
+    .nav { display: grid; gap: 2px; }
+    .nav a { padding: .34rem .4rem; border-left: 2px solid transparent; color: #afc8b5; font-size: .9rem; text-decoration: none; }
+    .nav a:hover { border-left-color: var(--lime); color: #f0ffec; background: #112318; }
+    .nav .basic { color: var(--lime); }
+    .nav .advanced { color: var(--amber); }
+    .nav .expert { color: var(--violet); }
+    .nav-rule { height: 1px; margin: .6rem 0; background: #234732; }
+
+    main { min-width: 0; }
+    .notice, .lesson, .quick-map, .reference { border: 1px solid var(--line); border-radius: 11px; background: linear-gradient(135deg, rgba(16, 38, 28, .96), rgba(8, 22, 15, .96)); box-shadow: var(--shadow); }
+    .notice { display: grid; grid-template-columns: auto 1fr; gap: .9rem; padding: 1rem 1.1rem; border-color: #7f513b; background: linear-gradient(135deg, #251810, #120e0a); }
+    .notice .mark { color: var(--amber); font: 900 1.2rem var(--mono); }
+    .notice p { margin: 0; color: #e4d0b5; }
+    .quick-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 28px 0; overflow: hidden; background: #234e37; }
+    .map-cell { min-height: 135px; padding: 1rem; background: #0a1811; }
+    .map-cell b { display: block; font: 800 1.15rem var(--mono); }
+    .map-cell small { color: var(--muted); }
+    .map-cell.basic b { color: var(--lime); }
+    .map-cell.advanced b { color: var(--amber); }
+    .map-cell.expert b { color: var(--violet); }
+
+    section.course-section { margin-top: 52px; scroll-margin-top: 15px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 16px; padding-bottom: 13px; border-bottom: 1px solid #2d5d43; }
+    .section-head p { max-width: 650px; margin: 0; color: var(--muted); }
+    .level { flex: 0 0 auto; padding: .3rem .52rem; border: 1px solid currentColor; border-radius: 999px; font: 700 .72rem var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+    .level.start, .level.basic { color: var(--lime); }
+    .level.advanced { color: var(--amber); }
+    .level.expert { color: var(--violet); }
+    .level.reference { color: var(--cyan); }
+    .lesson, .reference { margin: 18px 0; padding: clamp(1rem, 3vw, 1.55rem); scroll-margin-top: 15px; }
+    .lesson[data-searchable].filtered, .reference[data-searchable].filtered, [data-searchable].filtered { display: none; }
+    .lesson > :first-child { margin-top: 0; }
+    .meta { display: flex; flex-wrap: wrap; gap: .45rem; margin: .6rem 0 1rem; }
+    .tag { padding: .18rem .42rem; border: 1px solid #3c684b; border-radius: 999px; color: #b7d6bd; background: #0a1710; font: 700 .7rem var(--mono); }
+    .tag.risk { border-color: #8a564e; color: #ffc0b5; }
+    .tag.admin { border-color: #765e27; color: #ffe09a; }
+    .tag.legacy { border-color: #66557c; color: #e1c6ff; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .mini { padding: .86rem; border: 1px solid #28533b; border-radius: 8px; background: #09170f; }
+    .mini p:last-child { margin-bottom: 0; }
+    .callout { margin: 1rem 0; padding: .82rem .95rem; border-left: 3px solid var(--cyan); border-radius: 0 7px 7px 0; background: #0a2120; color: #c0dedb; }
+    .callout.warning { border-left-color: var(--amber); background: #21190e; color: #ebd7ad; }
+    .callout.danger { border-left-color: var(--danger); background: #25130f; color: #f3c5bd; }
+    .callout strong { color: #f3fff0; }
+    table { width: 100%; margin: 1rem 0; border-collapse: collapse; overflow: hidden; border: 1px solid #2c5a40; border-radius: 7px; font-size: .9rem; }
+    th, td { padding: .64rem .7rem; border-bottom: 1px solid #254c36; text-align: left; vertical-align: top; }
+    th { color: #d9f8ce; background: #11271b; font: 700 .77rem var(--mono); letter-spacing: .03em; }
+    tr:last-child td { border-bottom: 0; }
+    td code { color: #d9ffc7; font-size: .88em; }
+    .wide { overflow-x: auto; }
+
+    .codebox { margin: 1rem 0; overflow: hidden; border: 1px solid #315d45; border-radius: 8px; background: #050a07; box-shadow: inset 0 1px 0 rgba(255,255,255,.03); }
+    .codebar { display: flex; justify-content: space-between; align-items: center; padding: .42rem .55rem .42rem .75rem; border-bottom: 1px solid #244630; background: #0e2016; }
+    .codebar span { color: #95c2a1; font: 700 .7rem var(--mono); letter-spacing: .1em; }
+    .copy { padding: .22rem .45rem; border-color: #3c664a; border-radius: 4px; color: #bfdfc4; background: #11261a; font-size: .7rem; }
+    pre { margin: 0; padding: 1rem; overflow: auto; color: #e3f5da; font: .82rem/1.58 var(--mono); tab-size: 4; }
+    .comment { color: #7fa48a; }
+    .command { color: #b9f497; }
+    .value { color: #ffd47e; }
+    .focus { color: #8ae3e8; }
+
+    details { margin: .85rem 0; border: 1px solid #274d38; border-radius: 7px; background: #09170f; }
+    summary { padding: .66rem .8rem; color: #d7f7cc; cursor: pointer; font-weight: 700; }
+    details > :not(summary) { margin-left: .9rem; margin-right: .9rem; }
+    details > :last-child { margin-bottom: .85rem; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { position: relative; padding-left: 1.6rem; }
+    .checklist li::before { content: "[ ]"; position: absolute; left: 0; color: var(--lime); font-family: var(--mono); }
+    .exam-intro { margin: 1rem 0 1.25rem; color: #bbd5c2; }
+    .exam-status { margin: 0 0 1rem; padding: .7rem .85rem; border: 1px solid #37654b; border-radius: 7px; color: #bfe4c4; background: #0a1b11; font: .84rem var(--mono); }
+    .exam-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+    .quiz { padding: 1rem; border: 1px solid #315d45; border-radius: 9px; background: #09170f; }
+    .quiz.wide-quiz { grid-column: 1 / -1; }
+    .quiz-top { display: flex; align-items: center; justify-content: space-between; gap: .7rem; margin-bottom: .6rem; }
+    .question-id { color: #cdeac2; font: 800 .8rem var(--mono); letter-spacing: .04em; }
+    .quiz p { margin: .4rem 0 .8rem; }
+    .quiz label { display: block; margin-bottom: .35rem; color: var(--muted); font-size: .79rem; }
+    .answer-row { display: flex; gap: .5rem; }
+    .answer-input { min-width: 0; flex: 1; padding: .53rem .58rem; border: 1px solid #3d6f50; border-radius: 5px; color: #edffea; background: #040b07; font: .82rem var(--mono); }
+    .answer-input:focus { outline: 2px solid #74d594; outline-offset: 1px; }
+    .feedback { min-height: 1.3em; margin: .62rem 0 0 !important; font-size: .88rem; }
+    .feedback.good { color: #b6f294; }
+    .feedback.try { color: #ffd481; }
+    .quiz-note { margin-top: 1rem; color: #91aca0; font-size: .88rem; }
+    .index { columns: 2 260px; column-gap: 18px; }
+    .index p { break-inside: avoid; margin: .25rem 0; }
+    .index code { color: var(--lime); }
+    footer { max-width: 1380px; margin: 0 auto; padding: 0 24px 32px; color: #789482; font-size: .86rem; }
+
+    @media (max-width: 920px) {
+      .shell { grid-template-columns: 1fr; }
+      .rail { position: static; }
+      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .nav-rule { display: none; }
+    }
+    @media (max-width: 650px) {
+      .hero, .shell, footer { padding-left: 15px; padding-right: 15px; }
+      .quick-map, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .exam-grid { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+      .nav { grid-template-columns: 1fr; }
+      table { font-size: .82rem; }
+      th, td { min-width: 112px; }
+    }
+    @media print {
+      body { color: #000; background: #fff; }
+      .topline, .hero .actions, .rail, .copy { display: none; }
+      .shell { display: block; padding: 0; }
+      .lesson, .reference, .notice, .quick-map { box-shadow: none; color: #000; border-color: #777; background: #fff; break-inside: avoid; }
+      h1, h2, h3, .callout, a { color: #000; }
+      pre { color: #000; white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to the course</a>
+  <div class="topline"><span>LEARNBATCH / OFFLINE EDITION</span> &nbsp;|&nbsp; cmd.exe field manual &nbsp;|&nbsp; Windows 10 / 11-oriented</div>
+
+  <header class="hero">
+    <p class="eyebrow">A hands-on guide to the Windows command processor</p>
+    <h1>Learn Batch.<br>From first script to parser wizardry.</h1>
+    <p>This is a self-contained course for <code>.bat</code> and <code>.cmd</code> files. It teaches the Batch language itself, its built-in commands, the command processor's traps, and the Windows tools scripts commonly orchestrate. Every sample is annotated and designed to be copied into a disposable test folder first.</p>
+    <div class="actions">
+      <a class="button" href="#start">Start the course</a>
+      <a class="button secondary" href="#index">Open command index</a>
+      <a class="button secondary" href="Documentation.html">Read the guide to this guide</a>
+      <button class="secondary" type="button" onclick="window.print()">Print / save PDF</button>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="rail" aria-label="Course navigation">
+      <strong>Course navigator</strong>
+      <label for="search" class="eyebrow">Filter lessons &amp; commands</label>
+      <input class="search" id="search" type="search" placeholder="Try: delayed expansion" autocomplete="off">
+      <div id="filter-result" aria-live="polite">Showing the complete manual.</div>
+      <nav class="nav">
+        <a href="#start">00 / Start here</a>
+        <a class="basic" href="#basic">01 / Basic Batch</a>
+        <a href="#basic-syntax">&nbsp;&nbsp;Syntax, variables, arguments</a>
+        <a href="#basic-flow">&nbsp;&nbsp;Files, flow, loops</a>
+        <a class="advanced" href="#advanced">02 / Advanced Batch</a>
+        <a href="#advanced-expansion">&nbsp;&nbsp;Expansion and FOR /F</a>
+        <a href="#advanced-streams">&nbsp;&nbsp;Streams, errors, tooling</a>
+        <a class="expert" href="#expert">03 / Expert Batch</a>
+        <a href="#expert-parser">&nbsp;&nbsp;The parser and escaping</a>
+        <a href="#expert-structure">&nbsp;&nbsp;Subroutines and resilience</a>
+        <span class="nav-rule"></span>
+        <a href="#exams">Exams / 20 challenges</a>
+        <a href="#recipes">Recipes</a>
+        <a href="#index">Command index</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+        <a href="#sources">Official references</a>
+      </nav>
+    </aside>
+
+    <main id="content">
+      <div class="notice" role="note">
+        <div class="mark">!</div>
+        <p><strong>Safety first.</strong> Batch can delete data, change services, start programs, and run with elevated rights. Make <code>BatchLab</code> in a non-important folder, inspect paths with <code>echo</code> before acting, and prefer a <em>dry run</em>. Never paste an unfamiliar command into an Administrator console.</p>
+      </div>
+
+      <div class="quick-map" aria-label="Course levels">
+        <div class="map-cell basic"><b>01 / Basic</b><small>Write predictable scripts: commands, paths, variables, input, conditions, loops, and redirection.</small></div>
+        <div class="map-cell advanced"><b>02 / Advanced</b><small>Understand parsing: delayed expansion, FOR /F, output streams, error codes, logging, and Windows tools.</small></div>
+        <div class="map-cell expert"><b>03 / Expert</b><small>Design durable automation: parser phases, escaping, subroutines, contracts, tests, security, and portability.</small></div>
+      </div>
+
+      <section class="course-section" id="start" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">00 / Orientation</p><h2>Start here: your safe Batch lab</h2></div>
+          <span class="level start">Foundation</span>
+        </div>
+
+        <article class="lesson" data-searchable data-keywords="cmd command prompt bat cmd file extensions help execution save ansi utf8">
+          <h3>What Batch is (and what it is not)</h3>
+          <div class="meta"><span class="tag">Core concept</span><span class="tag">No install needed</span></div>
+          <p>Batch is the scripting language interpreted by <code>cmd.exe</code>, the traditional Windows Command Prompt. A Batch file is plain text with a <code>.bat</code> or <code>.cmd</code> extension. <code>.cmd</code> is the conventional choice for modern Windows; both are usually handled by the same interpreter.</p>
+          <div class="grid-2">
+            <div class="mini"><h4>Batch excels at</h4><p>Launching programs, moving files, calling built-in Windows tools, small menus, log parsing, and glueing command-line utilities together.</p></div>
+            <div class="mini"><h4>Choose another tool when</h4><p>You need structured data, modern Unicode handling, complex networking, parallel work, reliable JSON/CSV, or long-lived software. PowerShell, Python, or a compiled tool may be clearer.</p></div>
+          </div>
+          <p>Batch has no native function keyword, arrays, objects, or exception handling. Its closest equivalent to a function is a <strong>subroutine</strong>: a label called with <code>call :label arguments</code>. The rest of this manual shows how to work safely within those limits.</p>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="create run script cmd bat notepad command prompt help /? test lab directory">
+          <h3>Make, run, and inspect a script</h3>
+          <ol>
+            <li>Create a folder such as <code>%USERPROFILE%\Desktop\BatchLab</code>.</li>
+            <li>Use a plain-text editor; save as <code>hello.cmd</code>, not <code>hello.cmd.txt</code>.</li>
+            <li>Open Command Prompt, use <code>cd /d</code> to enter the folder, then run <code>hello.cmd</code>.</li>
+            <li>Ask the installed Windows version for help: <code>help</code>, <code>help for</code>, or <code>robocopy /?</code>.</li>
+          </ol>
+          <div class="codebox"><div class="codebar"><span>HELLO.CMD</span></div><pre><code><span class="comment">@rem The @ prevents this one command from being echoed.</span>
+<span class="command">@echo off</span>
+<span class="comment">rem From now on, print only what the script deliberately prints.</span>
+
+<span class="command">echo</span> Hello from Batch.
+<span class="command">echo</span> Script file: <span class="value">%~f0</span>
+<span class="command">echo</span> Working folder: <span class="value">%CD%</span>
+<span class="command">pause</span></code></pre></div>
+          <p><code>%~f0</code> expands to the fully qualified path of the running script; <code>%CD%</code> is the current working directory. They are frequently different, which matters when a script is launched from a shortcut or another folder.</p>
+          <div class="callout"><strong>Encoding note:</strong> prefer ANSI or UTF-8 without a BOM for the broadest compatibility. Recent Windows builds handle UTF-8 better, but <code>cmd.exe</code> remains sensitive to console code pages and legacy encodings. Keep filenames, variables, and logs ASCII if compatibility matters.</div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="parser command extensions cmd /e /v enableextensions enableDelayedExpansion parse phase">
+          <h3>Know the interpreter switches</h3>
+          <table><thead><tr><th>Switch / setting</th><th>What it controls</th><th>Practical guidance</th></tr></thead><tbody>
+            <tr><td><code>cmd /d</code></td><td>Skips AutoRun registry commands for that new shell.</td><td>Useful when diagnosing a machine-specific startup customization.</td></tr>
+            <tr><td><code>cmd /e:on</code></td><td>Enables command extensions.</td><td>Extensions are normally on; modern scripts should explicitly request them with <code>setlocal EnableExtensions</code>.</td></tr>
+            <tr><td><code>cmd /v:on</code></td><td>Enables delayed expansion using <code>!name!</code>.</td><td>Use locally, not blindly across all scripts; literal exclamation marks are a trap.</td></tr>
+            <tr><td><code>cmd /c command</code></td><td>Runs a command then exits the child shell.</td><td>Handy for controlled child execution, but adds another parsing layer.</td></tr>
+            <tr><td><code>cmd /k command</code></td><td>Runs a command then keeps the child shell open.</td><td>Helpful while learning or debugging.</td></tr>
+          </tbody></table>
+          <p>Most lessons start with <code>setlocal EnableExtensions DisableDelayedExpansion</code>. That establishes a known script-local environment and avoids inheriting surprising settings from its caller.</p>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="batch checklist exercise safety test dry run backup">
+          <h3>Before you automate anything real</h3>
+          <ul class="checklist">
+            <li>Use quotes around every path which may contain spaces.</li>
+            <li>Print a computed target before changing it: <code>echo Target is "%target%"</code>.</li>
+            <li>Use <code>if exist</code>, <code>if not exist</code>, and explicit error checks instead of assumptions.</li>
+            <li>Keep a log with <code>&gt;&gt;"file.log" 2&gt;&amp;1</code>.</li>
+            <li>Give destructive behavior an opt-in switch such as <code>--apply</code>; default to preview.</li>
+            <li>Run a command with <code>/?</code> on the Windows versions you support.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="course-section" id="basic" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">01 / Basic Batch</p><h2>Build reliable fundamentals</h2><p>Basic does not mean shallow. These mechanics are the grammar behind every Batch script, including expert-level ones.</p></div>
+          <span class="level basic">Basic</span>
+        </div>
+
+        <article class="lesson" id="basic-syntax" data-searchable data-keywords="echo @ rem :: comments caret line continuation special characters quotes ampersand pipe redirection command separators">
+          <h3>Lines, comments, and command separators</h3>
+          <div class="wide"><table><thead><tr><th>Syntax</th><th>Meaning</th><th>Example / caution</th></tr></thead><tbody>
+            <tr><td><code>@command</code></td><td>Do not echo this command before executing it.</td><td><code>@echo off</code> is the standard quiet-script opening.</td></tr>
+            <tr><td><code>echo text</code></td><td>Write text to standard output.</td><td><code>echo(</code> reliably prints a blank line, even if a file named <code>echo</code> exists.</td></tr>
+            <tr><td><code>rem text</code></td><td>A real comment command.</td><td>Use it inside blocks and redirections safely.</td></tr>
+            <tr><td><code>:: text</code></td><td>A label-like comment idiom.</td><td>Convenient at top level; avoid it in parenthesized blocks or redirected code because it can parse unexpectedly.</td></tr>
+            <tr><td><code>one &amp; two</code></td><td>Run <code>two</code> regardless of <code>one</code>'s result.</td><td>Escape a literal ampersand as <code>^&amp;</code>.</td></tr>
+            <tr><td><code>one &amp;&amp; two</code></td><td>Run <code>two</code> only when <code>one</code> returns exit code 0.</td><td>Good for short success chains; use explicit checks in serious scripts.</td></tr>
+            <tr><td><code>one || two</code></td><td>Run <code>two</code> only when <code>one</code> fails.</td><td>A concise fallback or error message.</td></tr>
+            <tr><td><code>one | two</code></td><td>Pipe standard output from <code>one</code> to <code>two</code>.</td><td>Each side is normally evaluated in a child command process; see Expert.</td></tr>
+            <tr><td><code>^</code></td><td>Escape the next special character or continue a physical line.</td><td>The caret must be the final non-space character for line continuation.</td></tr>
+          </tbody></table></div>
+          <div class="codebox"><div class="codebar"><span>SYNTAX.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="comment">rem A safe, readable line continuation: caret is last on its line.</span>
+<span class="command">echo</span> This sentence is ^
+continued on the next physical line.
+
+<span class="comment">rem Print characters that normally have command meaning.</span>
+<span class="command">echo</span> A ^&amp; B  ^|  C ^&gt; D ^&lt; E  ^(group^)
+
+<span class="comment">rem This executes the second echo only if the first succeeds.</span>
+<span class="command">echo</span> first <span class="focus">&amp;&amp;</span> <span class="command">echo</span> success</code></pre></div>
+          <div class="callout warning"><strong>Quotation is not escaping.</strong> Quotes group a path for many commands, but <code>cmd.exe</code> still recognizes several metacharacters during parsing. When a value can contain <code>&amp;</code>, <code>|</code>, parentheses, percent signs, or exclamation marks, learn the Expert parsing rules before embedding it in a command line.</div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="set variables environment variable expansion substring replacement set /a set /p random date time cd errorlevel">
+          <h3>Variables: text, input, arithmetic, and built-ins</h3>
+          <p>Batch variables live in the process environment. Assign with <code>set "name=value"</code>: the outer quotes are not stored, preventing accidental trailing spaces. Read a variable with <code>%name%</code>.</p>
+          <div class="codebox"><div class="codebar"><span>VARIABLES.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+
+<span class="comment">rem Safe assignment form: quote the whole assignment, not the value alone.</span>
+<span class="command">set</span> <span class="value">"name=Ada Lovelace"</span>
+<span class="command">echo</span> Hello, %name%.
+
+<span class="comment">rem Ask for input. An empty reply leaves the prior value unchanged.</span>
+<span class="command">set</span> <span class="focus">/p</span> <span class="value">"city=City (Enter keeps current): "</span>
+
+<span class="comment">rem /a evaluates integer arithmetic; no percent signs are required inside it.</span>
+<span class="command">set</span> <span class="focus">/a</span> <span class="value">total=7 * (3 + 2)</span>
+<span class="command">echo</span> total=%total%
+
+<span class="comment">rem Substring and string replacement are text operations.</span>
+<span class="command">set</span> <span class="value">"file=report-final.txt"</span>
+<span class="command">echo</span> First six letters: %file:~0,6%
+<span class="command">echo</span> Replace dash: %file:-=_%
+<span class="command">endlocal</span></code></pre></div>
+          <table><thead><tr><th>Form</th><th>Use</th><th>Important detail</th></tr></thead><tbody>
+            <tr><td><code>set "x=value"</code></td><td>Assign text.</td><td><code>set "x="</code> deletes it. <code>set x</code> lists matching variables.</td></tr>
+            <tr><td><code>%x%</code></td><td>Percent expansion.</td><td>Expanded when a parenthesized block is parsed, not necessarily when each line runs.</td></tr>
+            <tr><td><code>%x:~start,length%</code></td><td>Extract text.</td><td>Negative offsets count from the end: <code>%x:~-4%</code>.</td></tr>
+            <tr><td><code>%x:old=new%</code></td><td>Replace text.</td><td><code>%x:*prefix=%</code> removes through the first matching prefix.</td></tr>
+            <tr><td><code>set /a</code></td><td>Integer arithmetic and bitwise work.</td><td>Operators include <code>+ - * / %% &lt;&lt; &gt;&gt; &amp; ^ |</code>; division is integer division. Escape operators when needed outside the expression.</td></tr>
+            <tr><td><code>set /p</code></td><td>Read one line from the user or redirected input.</td><td>Validate input; it is untrusted text, not a number merely because you asked for one.</td></tr>
+            <tr><td><code>setx</code></td><td>Persist a user/system variable for future processes.</td><td>It does <em>not</em> update the current shell; avoid using it casually in scripts.</td></tr>
+          </tbody></table>
+          <details><summary>Useful dynamic values</summary><p><code>%CD%</code> current directory; <code>%DATE%</code> and <code>%TIME%</code> are locale-dependent display strings; <code>%RANDOM%</code> is a pseudo-random integer from 0 to 32767; <code>%ERRORLEVEL%</code> exposes the previous program's exit code when no same-named environment variable shadows it; <code>%CMDEXTVERSION%</code> reports the extension version. Do not use <code>%DATE%</code> as a portable filename timestamp: its layout changes with regional settings.</p></details>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="arguments parameters %0 %1 %* shift modifiers %~f1 %~dp0 file extension path quote">
+          <h3>Arguments and path modifiers</h3>
+          <p>A script receives positional arguments in <code>%0</code> through <code>%9</code>. <code>%0</code> is the script invocation; <code>%*</code> is the original complete argument list. Use <code>shift</code> to bring argument 10 onward into range.</p>
+          <div class="wide"><table><thead><tr><th>Form</th><th>Returns for argument 1</th></tr></thead><tbody>
+            <tr><td><code>%1</code></td><td>The argument exactly as supplied, perhaps including quotes.</td></tr>
+            <tr><td><code>%~1</code></td><td>The argument with surrounding quotes removed.</td></tr>
+            <tr><td><code>%~f1</code></td><td>Fully qualified path.</td></tr>
+            <tr><td><code>%~d1</code> / <code>%~p1</code></td><td>Drive / path portion.</td></tr>
+            <tr><td><code>%~n1</code> / <code>%~x1</code></td><td>Base filename / extension.</td></tr>
+            <tr><td><code>%~dp1</code> / <code>%~nx1</code></td><td>Drive+path / base name+extension.</td></tr>
+            <tr><td><code>%~dp0</code></td><td>The folder of the script itself, with a trailing backslash. Fundamental for self-contained tools.</td></tr>
+            <tr><td><code>%~z1</code> / <code>%~t1</code></td><td>File size / modified date-time (if the argument names an existing file).</td></tr>
+          </tbody></table></div>
+          <div class="codebox"><div class="codebar"><span>ARGUMENTS.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+
+<span class="command">if</span> <span class="focus">"%~1"==""</span> (
+  <span class="command">echo</span> Usage: %~nx0 "a file or folder"
+  <span class="command">exit</span> <span class="focus">/b</span> 64
+)
+
+<span class="command">echo</span> Script folder: <span class="value">%~dp0</span>
+<span class="command">echo</span> Target full path: <span class="value">%~f1</span>
+<span class="command">echo</span> Name only: <span class="value">%~nx1</span>
+<span class="command">endlocal</span></code></pre></div>
+          <p>Quote at the <em>use site</em>: <code>if exist "%~f1"</code>, <code>type "%~f1"</code>, <code>copy /y "%source%" "%destination%"</code>. Never construct a command by adding quotes to an already quoted value unless you have deliberately normalized it first.</p>
+        </article>
+
+        <article class="lesson" id="basic-flow" data-searchable data-keywords="if exist defined errorlevel else goto labels call exit /b choice timeout pause for /l /d /r loops">
+          <h3>Conditions, labels, and control flow</h3>
+          <table><thead><tr><th>Pattern</th><th>Meaning</th><th>Gotcha</th></tr></thead><tbody>
+            <tr><td><code>if "a"=="b" command</code></td><td>String comparison; <code>/i</code> ignores case.</td><td>Quote both operands so empty values still produce valid syntax.</td></tr>
+            <tr><td><code>if exist "path" command</code></td><td>Test whether a file or directory exists.</td><td>It does not prove a path is safe to modify.</td></tr>
+            <tr><td><code>if defined name command</code></td><td>Test whether a variable is defined.</td><td>Requires command extensions.</td></tr>
+            <tr><td><code>if errorlevel N command</code></td><td>True when exit code is <strong>N or greater</strong>.</td><td>Check from largest to smallest, or use <code>if not errorlevel 1</code> for success.</td></tr>
+            <tr><td><code>goto :label</code></td><td>Jump to a label.</td><td>Overuse creates spaghetti flow; prefer subroutines and structured blocks.</td></tr>
+            <tr><td><code>call :label args</code></td><td>Enter a subroutine.</td><td>Return with <code>exit /b code</code>, not plain <code>exit</code>.</td></tr>
+            <tr><td><code>choice /c YN</code></td><td>Read a controlled single-key answer.</td><td>Better than <code>set /p</code> when input must be one of a few choices.</td></tr>
+          </tbody></table>
+          <div class="codebox"><div class="codebar"><span>CHOICE.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+<span class="command">choice</span> <span class="focus">/c YN /n /m "Continue with the safe preview"</span>
+
+<span class="comment">rem CHOICE returns 1 for Y and 2 for N. Check high values first.</span>
+<span class="command">if errorlevel</span> 2 (
+  <span class="command">echo</span> Cancelled. Nothing changed.
+  <span class="command">exit</span> <span class="focus">/b</span> 0
+)
+<span class="command">echo</span> Preview would run here.
+<span class="command">endlocal</span></code></pre></div>
+          <div class="callout"><strong>Exit code convention:</strong> zero usually means success; nonzero means some failure. The exact values belong to each command. A good script documents the values it returns and propagates a failing tool's code deliberately.</div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="for loop /l /d /r /f %%f loop files directories range batch percent command prompt">
+          <h3>FOR loops: the four essential forms</h3>
+          <p>In a Batch file, a FOR variable uses <strong>two</strong> percent signs: <code>%%F</code>. At an interactive prompt it uses one: <code>%F</code>. FOR variable names are case-sensitive and should not be digits.</p>
+          <div class="codebox"><div class="codebar"><span>LOOPS.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="comment">rem 1) A simple set of words or matching files in the current folder.</span>
+<span class="command">for</span> %%F <span class="command">in</span> (*.txt) <span class="command">do</span> <span class="command">echo</span> Found: "%%F"
+
+<span class="comment">rem 2) /D visits matching directories, not ordinary files.</span>
+<span class="command">for</span> <span class="focus">/d</span> %%D <span class="command">in</span> (*) <span class="command">do</span> <span class="command">echo</span> Folder: "%%D"
+
+<span class="comment">rem 3) /R recurses from a root; use it for inventory before changes.</span>
+<span class="command">for</span> <span class="focus">/r</span> "%~dp0" %%F <span class="command">in</span> (*.log) <span class="command">do</span> <span class="command">echo</span> Log: "%%~fF"
+
+<span class="comment">rem 4) /L is a numeric sequence: start, step, end.</span>
+<span class="command">for</span> <span class="focus">/l</span> %%N <span class="command">in</span> (1,1,5) <span class="command">do</span> <span class="command">echo</span> Number %%N</code></pre></div>
+          <p><code>%%~fF</code>, <code>%%~nxF</code>, and related modifiers work for a FOR variable just like <code>%~f1</code> works for an argument. The Advanced section covers <code>for /f</code>, Batch's very powerful line/token parser.</p>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="directory files copy move ren del rd mkdir cd pushd popd dir type tree attrib basic filesystem">
+          <h3>Files, folders, and current directory</h3>
+          <div class="grid-3">
+            <div class="mini"><h4>Navigate</h4><p><code>cd</code>/<code>chdir</code> shows or changes the directory. Use <code>cd /d "D:\work"</code> to change drive and folder together. <code>pushd</code> saves the current folder; <code>popd</code> restores it.</p></div>
+            <div class="mini"><h4>Inspect</h4><p><code>dir /a /o:n</code> lists all items sorted by name. <code>type "file.txt"</code> writes a text file. <code>tree /f</code> shows a hierarchy. <code>attrib</code> views attributes.</p></div>
+            <div class="mini"><h4>Change carefully</h4><p><code>md</code>/<code>mkdir</code> creates folders; <code>copy</code>, <code>move</code>, and <code>ren</code> alter files. <code>del</code>/<code>erase</code> and <code>rd</code>/<code>rmdir</code> remove items and need deliberate safeguards.</p></div>
+          </div>
+          <div class="codebox"><div class="codebar"><span>SAFE-FILE-LAB.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+<span class="command">set</span> <span class="value">"lab=%~dp0lab"</span>
+
+<span class="comment">rem Build and inspect a folder owned by this demonstration.</span>
+<span class="command">if not exist</span> "%lab%\" <span class="command">mkdir</span> "%lab%"
+<span class="command">echo</span> example &gt; "%lab%\note.txt"
+<span class="command">copy</span> <span class="focus">/y</span> "%lab%\note.txt" "%lab%\note-copy.txt" &gt;nul
+<span class="command">dir</span> <span class="focus">/b</span> "%lab%"
+
+<span class="comment">rem Preview a cleanup. Replace ECHO only after independently verifying %lab%.</span>
+<span class="command">echo</span> <span class="command">del</span> /q "%lab%\note-copy.txt"
+<span class="command">endlocal</span></code></pre></div>
+          <div class="callout danger"><strong>Do not normalize destruction.</strong> <code>del /s</code>, <code>rd /s /q</code>, and broad wildcards can erase data without the Recycle Bin. This course shows them only as commands to recognize; design a preview, an exact owned root, and an explicit <code>--apply</code> gate before you ever use them.</div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="redirection standard output error input > >> 2> 2>&1 nul pipe stdin stdout stderr">
+          <h3>Redirection: send data where you intend</h3>
+          <table><thead><tr><th>Form</th><th>Effect</th></tr></thead><tbody>
+            <tr><td><code>command &gt; "out.txt"</code></td><td>Overwrite standard output (stream 1).</td></tr>
+            <tr><td><code>command &gt;&gt; "out.txt"</code></td><td>Append standard output.</td></tr>
+            <tr><td><code>command 2&gt; "errors.txt"</code></td><td>Overwrite standard error (stream 2).</td></tr>
+            <tr><td><code>command &gt; "all.log" 2&gt;&amp;1</code></td><td>First send stream 1 to the file, then make stream 2 follow its current destination. Order matters.</td></tr>
+            <tr><td><code>command 2&gt;&amp;1 &gt; "out.txt"</code></td><td>Different: error goes to the original destination, usually the screen; output goes to the file.</td></tr>
+            <tr><td><code>command &gt;nul 2&gt;&amp;1</code></td><td>Discard normal output and error. Use only when failures are checked another way.</td></tr>
+            <tr><td><code>command &lt; "input.txt"</code></td><td>Provide standard input from a file.</td></tr>
+          </tbody></table>
+          <p>A pipe (<code>|</code>) connects one command's output to another command's input. It is excellent for filtering, but it introduces a child-process boundary: do not expect a variable changed inside a piped block to persist in the parent script.</p>
+        </article>
+      </section>
+
+      <section class="course-section" id="advanced" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">02 / Advanced Batch</p><h2>Control the parser, data, and outcomes</h2><p>These patterns are what make a script maintainable after its first successful run.</p></div>
+          <span class="level advanced">Advanced</span>
+        </div>
+
+        <article class="lesson" id="advanced-expansion" data-searchable data-keywords="delayed expansion ! variable stale setlocal endlocal percent expansion blocks parentheses for loop">
+          <h3>Percent expansion versus delayed expansion</h3>
+          <p>Batch parses an entire parenthesized block before it starts executing the block. Therefore <code>%variable%</code> inside a block normally reflects the value that existed when the block was parsed. Delayed expansion, written <code>!variable!</code>, resolves later—at execution time.</p>
+          <div class="codebox"><div class="codebar"><span>EXPANSION.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+<span class="command">set</span> <span class="value">"count=0"</span>
+
+( 
+  <span class="command">set</span> /a count+=1
+  <span class="command">echo</span> Percent value looks stale here: %count%
+)
+
+<span class="command">setlocal</span> EnableDelayedExpansion
+<span class="command">for</span> /l %%N <span class="command">in</span> (1,1,3) <span class="command">do</span> (
+  <span class="command">set</span> /a count+=1
+  <span class="command">echo</span> Live value: !count!
+)
+<span class="command">endlocal</span>
+<span class="command">endlocal</span></code></pre></div>
+          <div class="grid-2">
+            <div class="mini"><h4>Use <code>%name%</code></h4><p>For values stable across the whole command/block; arguments; values containing literal exclamation marks; simple scripts with no changing state in a block.</p></div>
+            <div class="mini"><h4>Use <code>!name!</code></h4><p>For counters and values that change within a block. But delayed expansion can remove or transform literal <code>!</code> in data, especially while reading files.</p></div>
+          </div>
+          <details><summary>The safe file-reading toggle for literal exclamation marks</summary><p>Read each line while delayed expansion is <em>off</em>, then enable it only where required. The precise handoff is an Expert topic because it combines parsing phases, but the governing rule is simple: never globally enable delayed expansion before consuming untrusted text that may contain <code>!</code>.</p></details>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="for /f tokens delims skip eol usebackq parse files strings command output csv">
+          <h3>FOR /F: parse files, strings, and command output</h3>
+          <p><code>for /f</code> reads text line by line, skips blank lines by default, and splits each line into tokens using spaces and tabs by default. It can process a file, a literal string, or the output of a command. It is Batch's workhorse text parser—not a full CSV parser.</p>
+          <div class="wide"><table><thead><tr><th>Source syntax</th><th>What it means</th></tr></thead><tbody>
+            <tr><td><code>in (file.txt)</code></td><td>Read a file name (unquoted simple name).</td></tr>
+            <tr><td><code>in ("literal text")</code></td><td>Parse one literal string.</td></tr>
+            <tr><td><code>in ('command')</code></td><td>Run a command and parse its standard output.</td></tr>
+            <tr><td><code>usebackq ... in ("long file.txt")</code></td><td>With <code>usebackq</code>, double quotes name a file, single quotes make a literal string, and back quotes run a command.</td></tr>
+          </tbody></table></div>
+          <div class="codebox"><div class="codebar"><span>FOR-F.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+
+<span class="comment">rem Parse comma-separated key,value lines. tokens=1,2* gives %%A, %%B, %%C.</span>
+<span class="command">for</span> /f <span class="focus">"usebackq tokens=1,2* delims=,"</span> %%A <span class="command">in</span> ("%~dp0settings.txt") <span class="command">do</span> (
+  <span class="command">echo</span> Key=[%%A] Value=[%%B] Remainder=[%%C]
+)
+
+<span class="comment">rem Capture a single command-output line: first token from VER output.</span>
+<span class="command">for</span> /f <span class="focus">"tokens=*"</span> %%A <span class="command">in</span> ('ver') <span class="command">do</span> <span class="command">echo</span> %%A
+
+<span class="comment">rem tokens=* removes leading delimiters and keeps the remaining line.</span>
+<span class="command">endlocal</span></code></pre></div>
+          <table><thead><tr><th>Option</th><th>Purpose</th></tr></thead><tbody>
+            <tr><td><code>tokens=1,3,5</code></td><td>Choose positions. Each chosen token gets a sequential FOR variable.</td></tr>
+            <tr><td><code>tokens=2,*</code></td><td>Token 2 and an extra variable containing the rest of the line after it.</td></tr>
+            <tr><td><code>delims=,=:</code></td><td>Every listed character is a separator, not a multi-character delimiter.</td></tr>
+            <tr><td><code>skip=2</code></td><td>Skip leading lines in each input file.</td></tr>
+            <tr><td><code>eol=;</code></td><td>Lines beginning with the chosen single character are ignored.</td></tr>
+          </tbody></table>
+          <div class="callout warning"><strong>CSV caveat:</strong> quoted commas, escaped quotes, embedded newlines, and arbitrary Unicode make CSV a poor fit for <code>for /f</code>. Call a CSV-aware tool instead of growing a fragile parser.</div>
+        </article>
+
+        <article class="lesson" id="advanced-streams" data-searchable data-keywords="errorlevel error code logging retry stdout stderr start call cmd /c pipe find findstr sort where">
+          <h3>Errors, logs, and controlled child commands</h3>
+          <p>After an external program or built-in command, examine its exit code immediately. A later command can overwrite it. Capture diagnostic output in a log and give callers a meaningful exit code.</p>
+          <div class="codebox"><div class="codebar"><span>LOGGED-COMMAND.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+<span class="command">set</span> <span class="value">"log=%~dp0run.log"</span>
+
+<span class="command">echo</span> [%date% %time%] Checking a harmless folder... &gt;&gt; "%log%"
+<span class="command">dir</span> /a "%~dp0" &gt;&gt; "%log%" 2&gt;&amp;1
+<span class="command">set</span> <span class="value">"rc=%errorlevel%"</span>
+
+<span class="command">if not</span> "%rc%"=="0" (
+  <span class="command">echo</span> Folder check failed; see "%log%".
+  <span class="command">endlocal</span> <span class="focus">&amp; exit /b %rc%</span>
+)
+
+<span class="command">echo</span> OK. Details appended to "%log%".
+<span class="command">endlocal</span> <span class="focus">&amp; exit /b 0</span></code></pre></div>
+          <p>The final <code>endlocal &amp; exit /b %rc%</code> is intentional: percent expansion occurs while the local environment still exists, so the numeric code is carried out of scope. The Expert section generalizes that pattern for return values.</p>
+          <div class="grid-3">
+            <div class="mini"><h4><code>call</code></h4><p>Calls another Batch file or a subroutine and returns. Without <code>call</code>, invoking another Batch file transfers control and your caller does not resume.</p></div>
+            <div class="mini"><h4><code>start</code></h4><p>Launches a separate process/window. If the first quoted token is present, it is a window title: use <code>start "" "C:\Path\App.exe"</code>.</p></div>
+            <div class="mini"><h4><code>cmd /c</code></h4><p>Runs a string in a child interpreter. It is sometimes required by tools, but adds parsing; do not use it as a casual string-evaluation feature.</p></div>
+          </div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="find findstr sort fc where robocopy xcopy compact certutil hash text tools file utilities">
+          <h3>Text and file tools worth orchestrating</h3>
+          <div class="wide"><table><thead><tr><th>Tool</th><th>Use in Batch</th><th>Notes</th></tr></thead><tbody>
+            <tr><td><code>find</code> / <code>findstr</code></td><td>Search text; <code>findstr</code> supports practical regex-like patterns and recursive search.</td><td>Check exit codes: no match is often exit code 1, not necessarily a script failure.</td></tr>
+            <tr><td><code>sort</code></td><td>Sort piped or redirected text.</td><td>Works well in a pipeline: <code>type file | sort</code>.</td></tr>
+            <tr><td><code>fc</code></td><td>Compare files or text.</td><td>Useful for a verification step after generating a file.</td></tr>
+            <tr><td><code>where</code></td><td>Locate executables found via <code>PATH</code>.</td><td>Use it to diagnose "not recognized" errors.</td></tr>
+            <tr><td><code>robocopy</code></td><td>Resilient tree copy/mirroring.</td><td>Its success codes are unusual: values below 8 are normally nonfatal; read <code>robocopy /?</code>.</td></tr>
+            <tr><td><code>xcopy</code></td><td>Older recursive copy utility.</td><td>Legacy; prefer <code>robocopy</code> for substantial copies.</td></tr>
+            <tr><td><code>certutil -hashfile</code></td><td>Compute a file hash.</td><td>Available on many Windows systems; verify availability and parse output cautiously.</td></tr>
+          </tbody></table></div>
+          <div class="codebox"><div class="codebar"><span>SEARCH.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="comment">rem Search .log files below the script folder, case-insensitively, with line numbers.</span>
+<span class="command">findstr</span> <span class="focus">/s /n /i /c:"error"</span> "%~dp0*.log"
+<span class="command">if errorlevel</span> 2 <span class="command">echo</span> FINDSTR itself failed.
+<span class="command">if errorlevel</span> 1 <span class="command">echo</span> No matching lines were found.</code></pre></div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="date time locale timestamp chcp code page UTF-8 chcp 65001 tasklist taskkill ipconfig ping netstat systeminfo whoami">
+          <h3>System tooling, localization, and permissions</h3>
+          <p>Batch often coordinates Windows executables. The tools below are not language features; availability, output text, and privileges vary by Windows edition and policy. Treat output as user-facing/localized unless a tool supplies a machine-readable option.</p>
+          <div class="wide"><table><thead><tr><th>Group</th><th>Common commands</th><th>Script stance</th></tr></thead><tbody>
+            <tr><td>Identity &amp; inventory</td><td><code>whoami</code>, <code>hostname</code>, <code>systeminfo</code>, <code>driverquery</code></td><td>Usually safe to query; redirect verbose output to a log.</td></tr>
+            <tr><td>Network diagnosis</td><td><code>ipconfig</code>, <code>ping</code>, <code>pathping</code>, <code>tracert</code>, <code>netstat</code>, <code>nslookup</code></td><td>Use short timeouts and expect offline/VPN/firewall differences.</td></tr>
+            <tr><td>Processes</td><td><code>tasklist</code>, <code>taskkill</code>, <code>start</code></td><td><code>taskkill</code> changes state and may need elevation; identify a process precisely.</td></tr>
+            <tr><td>Services &amp; tasks</td><td><code>sc</code>, <code>schtasks</code>, <code>wevtutil</code></td><td>Often administrative and production-impacting; put query and change paths in separate commands.</td></tr>
+            <tr><td>Configuration</td><td><code>reg</code>, <code>setx</code>, <code>powercfg</code></td><td>Persistent state changes need backups, access checks, and explicit approval.</td></tr>
+          </tbody></table></div>
+          <div class="callout warning"><strong>Locale trap:</strong> never scrape a human-formatted <code>dir</code>, <code>date</code>, or <code>systeminfo</code> line as if it had a fixed English layout. Prefer a command's documented switches, a filename's metadata modifier, or another tool which can produce stable data.</div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="advanced project menu validation safe backup inventory dry run logging batch">
+          <h3>Advanced project: a preview-first inventory tool</h3>
+          <p>This compact example demonstrates argument validation, self-relative paths, logging, <code>for /r</code>, and a separate apply gate. It only lists files; it deliberately does not delete or copy anything.</p>
+          <div class="codebox"><div class="codebar"><span>INVENTORY.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+
+<span class="command">set</span> <span class="value">"root=%~1"</span>
+<span class="command">if</span> "%root%"=="" <span class="command">set</span> <span class="value">"root=%~dp0"</span>
+<span class="command">if not exist</span> "%root%\" (
+  <span class="command">echo</span> Folder not found: "%root%"
+  <span class="command">exit</span> /b 64
+)
+
+<span class="command">set</span> <span class="value">"log=%~dp0inventory.log"</span>
+<span class="command">echo</span> === Inventory of "%root%" === &gt; "%log%"
+<span class="command">for</span> /r "%root%" %%F <span class="command">in</span> (*) <span class="command">do</span> <span class="command">echo</span> %%~zF bytes  %%~fF &gt;&gt; "%log%"
+
+<span class="command">echo</span> Wrote "%log%".
+<span class="command">endlocal</span></code></pre></div>
+        </article>
+      </section>
+
+      <section class="course-section" id="expert" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">03 / Expert Batch</p><h2>Think like the command parser</h2><p>Expert Batch is less about clever one-liners and more about predicting each expansion, escaping exactly once, and putting guardrails around irreversible work.</p></div>
+          <span class="level expert">Expert</span>
+        </div>
+
+        <article class="lesson" id="expert-parser" data-searchable data-keywords="parser phases percent delayed expansion caret escape call double expansion pipe child cmd metacharacter parentheses">
+          <h3>The parser model: why Batch surprises people</h3>
+          <p>One physical-looking line can be parsed more than once. The exact phases are nuanced, but this mental model prevents most failures:</p>
+          <ol>
+            <li><strong>Read compound syntax.</strong> Parenthesized blocks and some operators are recognized as a unit before their individual commands run.</li>
+            <li><strong>Percent-expand.</strong> <code>%variables%</code>, arguments, and many modifiers are substituted early.</li>
+            <li><strong>Handle command syntax.</strong> Redirection, <code>&amp;</code>, <code>|</code>, parentheses, and caret escaping affect how commands are separated or connected.</li>
+            <li><strong>Delayed-expand, if enabled.</strong> <code>!variables!</code> resolve later for the running command.</li>
+            <li><strong>Possibly parse again.</strong> <code>call</code>, <code>cmd /c</code>, and pipe sides can introduce additional expansion/process boundaries.</li>
+          </ol>
+          <div class="codebox"><div class="codebar"><span>PARSE-DEMO.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions EnableDelayedExpansion
+<span class="command">set</span> <span class="value">"word=before"</span>
+
+(
+  <span class="command">set</span> <span class="value">"word=after"</span>
+  <span class="command">echo</span> percent: %word%     <span class="comment">rem expanded when block was parsed</span>
+  <span class="command">echo</span> delayed: !word!     <span class="comment">rem expanded when this command runs</span>
+)
+
+<span class="command">endlocal</span></code></pre></div>
+          <details><summary>Why pipes deserve special suspicion</summary><p>Each side of a pipe is generally executed in a separate <code>cmd.exe</code> context. A <code>set value=...</code> inside a piped parenthesized group will not reliably update the caller's variable. Write data to a file, refactor to avoid the pipe, or intentionally invoke a helper if state must return.</p></details>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="escape matrix caret percent exclamation ampersand pipe less greater quotes parentheses for variable special character">
+          <h3>Escaping and quoting reference</h3>
+          <div class="wide"><table><thead><tr><th>Character / construct</th><th>Normal role</th><th>Typical literal form in a Batch line</th><th>Extra warning</th></tr></thead><tbody>
+            <tr><td><code>^</code></td><td>Escape / continuation marker</td><td><code>^^</code></td><td>Carets may be consumed by each parse pass; nested <code>call</code> needs more.</td></tr>
+            <tr><td><code>%</code></td><td>Environment, argument, and FOR expansion</td><td><code>%%</code> for a literal percent in a Batch file</td><td>FOR variables also use <code>%%A</code> in files, but <code>%A</code> interactively.</td></tr>
+            <tr><td><code>!</code></td><td>Delayed expansion delimiter</td><td>Keep delayed expansion disabled while reading literal data</td><td>Caret does not provide a universal cure once delayed expansion is on.</td></tr>
+            <tr><td><code>&amp;</code> <code>|</code></td><td>Command chaining / pipe</td><td><code>^&amp;</code> and <code>^|</code></td><td>Quotes alone are not a complete escaping strategy for parser metacharacters.</td></tr>
+            <tr><td><code>&lt;</code> <code>&gt;</code></td><td>Redirection</td><td><code>^&lt;</code> and <code>^&gt;</code></td><td>Use normal redirection only outside data values.</td></tr>
+            <tr><td><code>( )</code></td><td>Grouping / block</td><td><code>^(</code> and <code>^)</code> when literal</td><td>In blocks they are especially important because the whole block is pre-parsed.</td></tr>
+            <tr><td><code>"</code></td><td>Groups path arguments for many programs</td><td><code>"%variable%"</code></td><td>Quotes are passed to the called program in some situations; not every program follows identical rules.</td></tr>
+          </tbody></table></div>
+          <div class="callout danger"><strong>Do not evaluate user text.</strong> Never take text from <code>set /p</code>, a file, a filename, or an environment variable and feed it to <code>call</code> or <code>cmd /c</code> as a constructed command. That turns data into code and invites command injection. Use fixed command templates and quote known path arguments instead.</div>
+        </article>
+
+        <article class="lesson" id="expert-structure" data-searchable data-keywords="subroutine call label exit /b setlocal endlocal return value function library namespace error contract">
+          <h3>Subroutines: Batch's function substitute</h3>
+          <p>Place callable labels after a main-script <code>exit /b</code> so execution does not fall into them. Each subroutine gets its own arguments. Use <code>setlocal</code> to avoid leaking working variables; return a value with a controlled <code>endlocal &amp; set</code> handoff.</p>
+          <div class="codebox"><div class="codebar"><span>SUBROUTINES.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+
+<span class="command">call</span> :ToUpperStub "sample" result
+<span class="command">echo</span> Result is "%result%"
+<span class="command">endlocal</span> <span class="focus">&amp; exit /b 0</span>
+
+:ToUpperStub
+<span class="comment">rem %~1 = input; %~2 = name of caller variable receiving result.</span>
+<span class="command">setlocal</span>
+<span class="command">set</span> <span class="value">"localValue=%~1"</span>
+<span class="comment">rem Batch lacks a general built-in uppercase function; this demonstrates return mechanics.</span>
+<span class="command">endlocal</span> <span class="focus">&amp; set "%~2=%localValue%" &amp; exit /b 0</span></code></pre></div>
+          <p>That return line works because <code>%localValue%</code> and <code>%~2</code> expand before <code>endlocal</code> executes. Keep the returned value simple and controlled. If it can contain parser-significant characters, a direct environment return is not enough without careful design.</p>
+          <div class="grid-2">
+            <div class="mini"><h4>Good subroutine contract</h4><p>Document parameters, accepted shapes, output variables, side effects, and exit codes. Prefix local variables (for example <code>_copy_src</code>) to reduce collisions in large scripts.</p></div>
+            <div class="mini"><h4>Good program layout</h4><p>Header/configuration, argument parsing, main orchestration, <code>exit /b</code>, then named helpers. Avoid jumping into the middle of a helper with <code>goto</code>.</p></div>
+          </div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="validation injection security quote path trusted untrusted inputs dry run idempotent temp lock cleanup error handling retry">
+          <h3>Defensive Batch design</h3>
+          <div class="grid-2">
+            <div class="mini"><h4>Validate at boundaries</h4><p>Check required arguments, exact allowed choices, path existence, and permissions before doing work. Use <code>choice</code> for finite menus. Do not use <code>set /a userInput</code> as validation: it evaluates an expression.</p></div>
+            <div class="mini"><h4>Separate preview from apply</h4><p>Make preview the default. Require an explicit flag such as <code>--apply</code> for changes and log exactly what will change. Make a repeated run safe (idempotent) where possible.</p></div>
+            <div class="mini"><h4>Own your temp paths</h4><p>Use a unique, script-controlled temp folder and remove only that exact folder after resolving/printing it. Avoid wildcards in cleanup logic.</p></div>
+            <div class="mini"><h4>Preserve failure evidence</h4><p>Log command, timestamp, current folder, exit code, and stderr. Do not suppress stderr until you have an explicit alternative diagnostic.</p></div>
+          </div>
+          <div class="codebox"><div class="codebar"><span>APPLY-GATE.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+<span class="command">set</span> <span class="value">"mode=preview"</span>
+<span class="command">if</span> /i "%~1"=="--apply" <span class="command">set</span> <span class="value">"mode=apply"</span>
+
+<span class="command">echo</span> Mode: %mode%
+<span class="command">echo</span> Would copy "%~dp0source.txt" to "%~dp0out\source.txt"
+
+<span class="command">if not</span> "%mode%"=="apply" (
+  <span class="command">echo</span> Preview only. Pass --apply after reviewing the paths.
+  <span class="command">exit</span> /b 0
+)
+
+<span class="comment">rem The real, fixed operation would go here after checks succeed.</span>
+<span class="command">echo</span> Apply path intentionally omitted from this teaching sample.
+<span class="command">endlocal</span></code></pre></div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="portable compatibility unc path pushd popd command line length locale extensions wmic deprecated powershell performance">
+          <h3>Compatibility and performance boundaries</h3>
+          <table><thead><tr><th>Concern</th><th>Practical response</th></tr></thead><tbody>
+            <tr><td>UNC paths (<code>\\server\share</code>)</td><td><code>cd</code> does not make a UNC path a current directory in the same way as a drive path. Use <code>pushd "\\server\share\folder"</code>; it can map a temporary drive, then use <code>popd</code>.</td></tr>
+            <tr><td>Command extensions</td><td>Start with <code>setlocal EnableExtensions</code>. If legacy compatibility truly matters, test with extensions disabled and document required behavior.</td></tr>
+            <tr><td>Long commands / paths</td><td><code>cmd.exe</code> has practical command-line and legacy path limitations. Process items in a loop rather than constructing a giant single command.</td></tr>
+            <tr><td>Language / regional settings</td><td>Do not parse display text. Avoid <code>%DATE%</code>/<code>%TIME%</code> for logic. Test on at least one non-English locale if distributing broadly.</td></tr>
+            <tr><td>Deprecated tools</td><td><code>WMIC</code> is deprecated/optional on current Windows. Prefer currently supported tools or a documented API; test availability before calling it.</td></tr>
+            <tr><td>Speed</td><td>Launching <code>cmd</code>, <code>findstr</code>, or other programs inside an inner loop is expensive. Use a single tool invocation, built-in expansion, or move high-volume work to a better-suited runtime.</td></tr>
+          </tbody></table>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="debug debug echo trace assert test batch errorlevel log fault injection pause cmd /k">
+          <h3>Debugging and test discipline</h3>
+          <ul>
+            <li>Temporarily replace <code>@echo off</code> with <code>@echo on</code>, or trace a focused block with <code>echo [trace] variable=[%variable%]</code>.</li>
+            <li>Use <code>set</code> to list your environment and catch accidental variables or spaces.</li>
+            <li>Run a suspect command alone with <code>command /?</code>; then capture its exit code immediately.</li>
+            <li>Test missing files, spaces in paths, empty input, non-ASCII filenames, access denied, and an already-completed run—not just the happy path.</li>
+            <li>Use <code>cmd /d /v:on /k yourscript.cmd</code> to isolate startup effects and keep the learning shell open.</li>
+          </ul>
+          <div class="codebox"><div class="codebar"><span>ASSERT.CMD</span></div><pre><code><span class="comment">rem A tiny assertion helper. Call it with a known condition outcome.</span>
+<span class="command">call</span> :AssertExists "%~dp0Learn Batch.html" || <span class="command">exit</span> /b 1
+<span class="command">exit</span> /b 0
+
+:AssertExists
+<span class="command">if exist</span> "%~1" <span class="command">exit</span> /b 0
+<span class="command">echo</span> ASSERTION FAILED: expected "%~1"
+<span class="command">exit</span> /b 1</code></pre></div>
+        </article>
+      </section>
+
+      <section class="course-section" id="recipes" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">Field recipes</p><h2>Small patterns you can reuse</h2><p>Read the comments and adapt the fixed, known pieces—not by evaluating arbitrary strings.</p></div>
+          <span class="level reference">Recipes</span>
+        </div>
+
+        <article class="lesson" data-searchable data-keywords="recipe script folder self relative %~dp0 config file read key value for f">
+          <h3>Locate assets next to the script</h3>
+          <div class="codebox"><div class="codebar"><span>SELF-RELATIVE.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+<span class="command">set</span> <span class="value">"scriptDir=%~dp0"</span>
+<span class="command">set</span> <span class="value">"config=%scriptDir%config\settings.ini"</span>
+<span class="command">if not exist</span> "%config%" (
+  <span class="command">echo</span> Missing configuration: "%config%"
+  <span class="command">exit</span> /b 2
+)
+<span class="command">type</span> "%config%"
+<span class="command">endlocal</span></code></pre></div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="recipe menu choice validation numeric input retry timeout">
+          <h3>A controlled menu and retry loop</h3>
+          <div class="codebox"><div class="codebar"><span>MENU.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions
+
+:menu
+<span class="command">cls</span>
+<span class="command">echo</span> 1. Show current folder
+<span class="command">echo</span> 2. Show script folder
+<span class="command">echo</span> Q. Quit
+<span class="command">choice</span> <span class="focus">/c 12Q /n /m "Select"</span>
+<span class="command">if errorlevel</span> 3 <span class="command">exit</span> /b 0
+<span class="command">if errorlevel</span> 2 <span class="command">echo</span> %~dp0 &amp; <span class="command">pause</span> &amp; <span class="command">goto</span> :menu
+<span class="command">if errorlevel</span> 1 <span class="command">cd</span> &amp; <span class="command">pause</span> &amp; <span class="command">goto</span> :menu</code></pre></div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="recipe temporary file unique temp random cleanup lock log rotate timestamp">
+          <h3>Make a script-owned temporary workspace</h3>
+          <div class="codebox"><div class="codebar"><span>TEMP-WORKSPACE.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">setlocal</span> EnableExtensions DisableDelayedExpansion
+<span class="command">set</span> <span class="value">"work=%TEMP%\LearnBatch-%RANDOM%-%RANDOM%"</span>
+
+<span class="command">mkdir</span> "%work%" || (<span class="command">echo</span> Cannot create workspace &amp; <span class="command">exit</span> /b 1)
+<span class="command">echo</span> Workspace: "%work%"
+<span class="comment">rem Work only inside the exact directory the script created.</span>
+
+<span class="comment">rem Cleanup is intentionally preview-only in this teaching sample:</span>
+<span class="command">echo</span> <span class="command">rd</span> /s /q "%work%"
+<span class="command">endlocal</span></code></pre></div>
+        </article>
+
+        <article class="lesson" data-searchable data-keywords="recipe locate executable where command dependency check">
+          <h3>Check for an external dependency</h3>
+          <div class="codebox"><div class="codebar"><span>DEPENDENCY.CMD</span></div><pre><code><span class="command">@echo off</span>
+<span class="command">where</span> robocopy &gt;nul 2&gt;&amp;1
+<span class="command">if errorlevel</span> 1 (
+  <span class="command">echo</span> Required command not found: robocopy
+  <span class="command">exit</span> /b 127
+)
+<span class="command">echo</span> robocopy is available.</code></pre></div>
+        </article>
+      </section>
+
+      <section class="course-section" id="index" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">Reference</p><h2>Command and language index</h2><p>Complete coverage here means CMD/Batch language constructs and the core commands commonly surfaced by <code>help</code>. Windows also ships optional, edition-specific executables; use the local <code>help</code> and <code>command /?</code> as the final authority.</p></div>
+          <span class="level reference">Index</span>
+        </div>
+
+        <article class="reference" data-searchable data-keywords="batch language grammar commands command extensions internal cmd complete index">
+          <h3>Batch language constructs</h3>
+          <div class="wide"><table><thead><tr><th>Construct</th><th>Role</th></tr></thead><tbody>
+            <tr><td><code>@</code>, <code>echo</code>, <code>rem</code></td><td>Command display and comments. Prefer <code>rem</code> in complex syntax.</td></tr>
+            <tr><td><code>set</code>, <code>set /a</code>, <code>set /p</code>, <code>setlocal</code>, <code>endlocal</code></td><td>Environment variables, arithmetic, input, and scope. <code>setx</code> is an external persistent-variable tool.</td></tr>
+            <tr><td><code>%var%</code>, <code>!var!</code>, <code>%0..%9</code>, <code>%*</code>, <code>%~...</code></td><td>Expansion, arguments, and path modifiers.</td></tr>
+            <tr><td><code>if</code>, <code>else</code>, <code>goto</code>, labels, <code>call</code>, <code>exit /b</code>, <code>shift</code></td><td>Decision, control transfer, subroutines, return, and positional-argument shifting.</td></tr>
+            <tr><td><code>for</code>, <code>/d</code>, <code>/r</code>, <code>/l</code>, <code>/f</code></td><td>Enumeration, recursion, ranges, and token parsing.</td></tr>
+            <tr><td><code>&amp;</code>, <code>&amp;&amp;</code>, <code>||</code>, <code>|</code>, <code>&gt;</code>, <code>&gt;&gt;</code>, <code>&lt;</code>, <code>2&gt;</code>, <code>2&gt;&amp;1</code>, <code>^</code></td><td>Chaining, pipelines, redirection, and escaping.</td></tr>
+          </tbody></table></div>
+        </article>
+
+        <article class="reference" data-searchable data-keywords="cmd built in commands assoc break call cd chdir cls color copy date del erase dir echo endlocal exit for ftype goto if md mkdir move path pause popd prompt pushd rd ren rename rmdir set setlocal shift start time title type ver verify vol">
+          <h3>Core CMD commands</h3>
+          <div class="index">
+            <p><code>assoc</code> — view/change extension associations.</p><p><code>break</code> — Ctrl+C checking behavior.</p><p><code>call</code> — call Batch file/subroutine.</p><p><code>cd</code> / <code>chdir</code> — current directory.</p><p><code>cls</code> — clear screen.</p><p><code>color</code> — console colors.</p><p><code>copy</code> — copy files.</p><p><code>date</code> / <code>time</code> — display/set clock; avoid interactive use in automation.</p><p><code>del</code> / <code>erase</code> — delete files <span class="tag risk">risk</span>.</p><p><code>dir</code> — list directory.</p><p><code>echo</code> — display / toggle echo.</p><p><code>endlocal</code> — end local scope.</p><p><code>exit</code> — leave shell or return with <code>/b</code>.</p><p><code>for</code> — enumerate / parse.</p><p><code>ftype</code> — file-type command associations.</p><p><code>goto</code> — jump to label.</p><p><code>if</code> — conditional execution.</p><p><code>md</code> / <code>mkdir</code> — create directory.</p><p><code>move</code> — move files.</p><p><code>path</code> — view/set executable search path.</p><p><code>pause</code> — wait for key.</p><p><code>popd</code> — restore pushed directory.</p><p><code>prompt</code> — change prompt.</p><p><code>pushd</code> — save/change directory; useful for UNC paths.</p><p><code>rd</code> / <code>rmdir</code> — remove directory <span class="tag risk">risk</span>.</p><p><code>ren</code> / <code>rename</code> — rename items.</p><p><code>set</code> — environment/input/arithmetic.</p><p><code>setlocal</code> — begin local scope.</p><p><code>shift</code> — shift argument positions.</p><p><code>start</code> — launch process/window.</p><p><code>title</code> — set console title.</p><p><code>type</code> — display text file.</p><p><code>ver</code> — display OS version.</p><p><code>verify</code> — disk write verification setting.</p><p><code>vol</code> — volume label/serial.</p>
+          </div>
+        </article>
+
+        <article class="reference" data-searchable data-keywords="windows tools attrib bcdedit cacls icacls chcp chkdsk compact comp convert diskpart doskey driverquery fc find findstr format fsutil gpresult help label mode more openfiles print recover replace robocopy sc schtasks shutdown sort subst systeminfo taskkill tasklist tree where whoami wmic xcopy">
+          <h3>Windows command tools Batch commonly calls</h3>
+          <p>These are executables or additional built-ins exposed by Windows, not all part of the Batch language. Availability and privilege vary; the tags are reminders, not permission to run them.</p>
+          <div class="index">
+            <p><code>attrib</code> — file attributes.</p><p><code>bcdedit</code> — boot configuration <span class="tag risk">boot-critical</span>.</p><p><code>cacls</code> / <code>icacls</code> — file ACLs <span class="tag admin">permissions</span>.</p><p><code>chcp</code> — console code page.</p><p><code>chkdsk</code> / <code>chkntfs</code> — disk checking <span class="tag risk">system</span>.</p><p><code>compact</code> — NTFS compression.</p><p><code>comp</code> / <code>fc</code> — compare files.</p><p><code>convert</code> — FAT to NTFS <span class="tag risk">disk</span>.</p><p><code>diskpart</code> — disk partitioning <span class="tag risk">destructive</span>.</p><p><code>doskey</code> — command history/macros.</p><p><code>driverquery</code> — installed drivers.</p><p><code>find</code> / <code>findstr</code> — text search.</p><p><code>format</code> — format volume <span class="tag risk">destructive</span>.</p><p><code>fsutil</code> — filesystem controls <span class="tag admin">admin</span>.</p><p><code>gpresult</code> — Group Policy results.</p><p><code>help</code> — command help.</p><p><code>label</code> — volume label.</p><p><code>mode</code> — devices/console.</p><p><code>more</code> — paged output.</p><p><code>openfiles</code> — remote open files.</p><p><code>print</code> — print text file.</p><p><code>recover</code> — damaged disk recovery.</p><p><code>replace</code> — replace files <span class="tag risk">risk</span>.</p><p><code>robocopy</code> — robust copy.</p><p><code>sc</code> — service management <span class="tag admin">admin</span>.</p><p><code>schtasks</code> — scheduled tasks <span class="tag admin">admin sometimes</span>.</p><p><code>shutdown</code> — reboot/shutdown <span class="tag risk">impact</span>.</p><p><code>sort</code> — sort text.</p><p><code>subst</code> — map path to drive letter.</p><p><code>systeminfo</code> — system inventory.</p><p><code>tasklist</code> / <code>taskkill</code> — processes <span class="tag risk">taskkill changes state</span>.</p><p><code>tree</code> — directory tree.</p><p><code>where</code> — locate executable.</p><p><code>whoami</code> — current identity.</p><p><code>wmic</code> — WMI command utility <span class="tag legacy">deprecated/optional</span>.</p><p><code>xcopy</code> — legacy tree copy.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="course-section" id="troubleshooting" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">Diagnostics</p><h2>When a Batch script behaves strangely</h2></div>
+          <span class="level reference">Fixes</span>
+        </div>
+        <article class="reference" data-searchable data-keywords="troubleshooting command not recognized variable old value spaces works interactive block access denied exclamation errorlevel">
+          <div class="wide"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>First fix to try</th></tr></thead><tbody>
+            <tr><td>"X is not recognized..."</td><td>Not on <code>PATH</code>, typo, wrong current folder, or extension association issue.</td><td>Run <code>where X</code>, then use a quoted absolute path or fix the dependency check.</td></tr>
+            <tr><td>Path with spaces breaks</td><td>Path was not quoted at the command use site.</td><td>Use <code>"%~f1"</code>, <code>"%variable%"</code>, or a fixed quoted path—avoid manual quote concatenation.</td></tr>
+            <tr><td>Variable prints its old value in a loop/block</td><td><code>%var%</code> was expanded while the block was parsed.</td><td>Enable delayed expansion narrowly and use <code>!var!</code>.</td></tr>
+            <tr><td>Text loses exclamation marks</td><td>Delayed expansion was active while reading data.</td><td>Disable delayed expansion during ingestion; redesign the handoff if necessary.</td></tr>
+            <tr><td>"Access is denied"</td><td>ACL/UAC, locked file, protected folder, or a different account context.</td><td>Do not simply elevate. Confirm target and identity with <code>whoami</code>; log the exact tool error.</td></tr>
+            <tr><td><code>if errorlevel 1</code> runs on success path</td><td>Checks are >=, and/or another command overwrote the code.</td><td>Capture immediately; test codes from highest to lowest; define the tool's success range.</td></tr>
+            <tr><td>Script exits after invoking another .cmd</td><td>The child Batch file was launched without <code>call</code>.</td><td>Use <code>call other.cmd args</code> when you need to return.</td></tr>
+            <tr><td>Works at prompt, fails in .cmd</td><td>FOR and percent syntax differ; file parser has more expansion phases.</td><td>Use <code>%%F</code> in a file; escape literal percent signs as <code>%%</code>.</td></tr>
+            <tr><td>Code works in one country/PC only</td><td>Parsed localized output, code-page assumptions, installed-tool differences.</td><td>Use documented machine-readable inputs/switches and test a fresh, non-English environment.</td></tr>
+          </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="course-section" id="exams" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">Assessment</p><h2>Exams / 20 challenges</h2><p>Type the short Batch answer that fits each prompt. The page checks your input and gives quick feedback.</p></div>
+          <span class="level basic">Exams</span>
+        </div>
+        <p class="exam-intro">These exercises stay in a safe, educational lane: variables, flow, quoting, arguments, subroutines, and parser behavior. They intentionally avoid any credential-attack or unauthorized-access example.</p>
+        <div class="exam-status" id="exam-status">30 prompts ready. Type a short answer and press Check.</div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 01 — EASY</span><span class="level basic">Easy</span></div>
+          <p>This set focuses on the first concepts: scope, navigation, and basic output.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">E01</span><span class="level basic">Easy</span></div>
+              <p>What command creates a local scope for variables so values do not leak?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="setlocal" aria-label="Easy 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">E02</span><span class="level basic">Easy</span></div>
+              <p>What command changes the current working directory?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="cd,chdir" aria-label="Easy 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">E03</span><span class="level basic">Easy</span></div>
+              <p>What syntax reads the value of the environment variable <code>name</code>?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="%name%" aria-label="Easy 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">E04</span><span class="level basic">Easy</span></div>
+              <p>What command pauses execution until the user presses a key?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="pause" aria-label="Easy 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">E05</span><span class="level basic">Easy</span></div>
+              <p>What command creates a directory?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir,md" aria-label="Easy 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 02 — ADVANCED</span><span class="level advanced">Advanced</span></div>
+          <p>This set checks the control flow and argument-handling ideas that appear in real scripts.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">A01</span><span class="level advanced">Advanced</span></div>
+              <p>What command hides the commands that are being executed from the console?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="@echo off,echo off" aria-label="Advanced 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">A02</span><span class="level advanced">Advanced</span></div>
+              <p>Which operator runs the next command only if the previous one failed?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="||" aria-label="Advanced 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">A03</span><span class="level advanced">Advanced</span></div>
+              <p>What does <code>%~dp0</code> expand to in a Batch file?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="the script directory with a trailing slash,the script folder path with a trailing backslash,the directory of the batch file with a trailing slash" aria-label="Advanced 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">A04</span><span class="level advanced">Advanced</span></div>
+              <p>What command checks whether a file or folder exists?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="if exist" aria-label="Advanced 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">A05</span><span class="level advanced">Advanced</span></div>
+              <p>What command jumps execution to a label?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="goto" aria-label="Advanced 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 03 — EXPERT</span><span class="level expert">Expert</span></div>
+          <p>This set covers parser details, input, subroutines, and exit behavior.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">X01</span><span class="level expert">Expert</span></div>
+              <p>What command reads a line of input from the user?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="set /p" aria-label="Expert 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">X02</span><span class="level expert">Expert</span></div>
+              <p>What command exits the current Batch script or subroutine without closing the shell?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="exit /b" aria-label="Expert 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">X03</span><span class="level expert">Expert</span></div>
+              <p>Which pattern is commonly used to return a value from a subroutine?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="endlocal &amp; set,endlocal and set" aria-label="Expert 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">X04</span><span class="level expert">Expert</span></div>
+              <p>What command line enables extensions and disables delayed expansion?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="setlocal enableextensions disabledelayexpansion,setlocal enableextensions disable delayed expansion" aria-label="Expert 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">X05</span><span class="level expert">Expert</span></div>
+              <p>What delayed-expansion syntax refers to a variable inside a block?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="!var!,!name!" aria-label="Expert 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 04 — EXTREME</span><span class="level expert">Extreme</span></div>
+          <p>This set targets the parser quirks and safety habits that separate a beginner from a careful Batch author.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">T01</span><span class="level expert">Extreme</span></div>
+              <p>What does <code>%~1</code> mean when it appears in a Batch file?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="the first argument with surrounding quotes removed,the first parameter without quotes" aria-label="Extreme 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">T02</span><span class="level expert">Extreme</span></div>
+              <p>What command parses text line by line and splits it into tokens?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="for /f" aria-label="Extreme 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">T03</span><span class="level expert">Extreme</span></div>
+              <p>Which operator redirects stderr into stdout?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="2&gt;&amp;1" aria-label="Extreme 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">T04</span><span class="level expert">Extreme</span></div>
+              <p>What character lets you escape a metacharacter in the parser?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="^" aria-label="Extreme 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">T05</span><span class="level expert">Extreme</span></div>
+              <p>What conditional command checks the exit code of the previous command?</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="if errorlevel" aria-label="Extreme 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 05 — EXTREME</span><span class="level expert">Extreme</span></div>
+          <p>This set asks you to predict the exact output of parser-heavy Batch snippets.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">O01</span><span class="level expert">Extreme</span></div>
+              <p>What is the output of this?</p>
+              <pre><code>@echo off
+setlocal EnableExtensions EnableDelayedExpansion
+set value=1
+if 1==1 (
+  set value=2
+  echo !value!
+)</code></pre>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="2" aria-label="Extreme output 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">O02</span><span class="level expert">Extreme</span></div>
+              <p>What is the output of this?</p>
+              <pre><code>@echo off
+setlocal EnableExtensions DisableDelayedExpansion
+set value=1
+if 1==1 (
+  set value=2
+  echo %value%
+)</code></pre>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="1" aria-label="Extreme output 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">O03</span><span class="level expert">Extreme</span></div>
+              <p>What is the output of this?</p>
+              <pre><code>@echo off
+setlocal EnableExtensions
+set value=outer
+call :change
+echo %value%
+exit /b 0
+:change
+set "value=inner"
+exit /b 0</code></pre>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="outer" aria-label="Extreme output 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">O04</span><span class="level expert">Extreme</span></div>
+              <p>What is the output of this?</p>
+              <pre><code>@echo off
+setlocal EnableExtensions
+set "line=red,green,blue"
+for /f "tokens=2 delims=," %%A in ("%line%") do echo %%A</code></pre>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="green" aria-label="Extreme output 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">O05</span><span class="level expert">Extreme</span></div>
+              <p>What is the output of this?</p>
+              <pre><code>@echo off
+setlocal EnableExtensions
+call :demo one two three
+exit /b 0
+:demo
+shift
+echo %1
+exit /b 0</code></pre>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="two" aria-label="Extreme output 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <div class="quiz-top"><span class="question-id">EXAM 06 — EXTREME</span><span class="level expert">Extreme</span></div>
+          <p>This set asks you to write the commands needed for nested folder and file creation, including quoting and redirection.</p>
+          <div class="exam-grid">
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">C01</span><span class="level expert">Extreme</span></div>
+              <p>Write the commands needed to create a folder named <code>Lab</code>, enter it, and create a file named <code>Hello.txt</code>.</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir lab &amp; cd lab &amp; type nul &gt; hello.txt,md lab &amp; cd lab &amp; type nul &gt; hello.txt,mkdir lab &amp; cd lab &amp; echo. &gt; hello.txt,md lab &amp; cd lab &amp; echo. &gt; hello.txt" aria-label="Extreme command 01 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">C02</span><span class="level expert">Extreme</span></div>
+              <p>Write the commands needed to create a parent folder named <code>Root</code>, then a child folder named <code>Work</code>, enter it, and create a file named <code>Hello.txt</code>.</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir root &amp; cd root &amp; mkdir work &amp; cd work &amp; type nul &gt; hello.txt,md root &amp; cd root &amp; md work &amp; cd work &amp; type nul &gt; hello.txt,mkdir root &amp; cd root &amp; mkdir work &amp; cd work &amp; echo. &gt; hello.txt,md root &amp; cd root &amp; md work &amp; cd work &amp; echo. &gt; hello.txt" aria-label="Extreme command 02 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">C03</span><span class="level expert">Extreme</span></div>
+              <p>Write the commands needed to create a folder with spaces named <code>My Folder</code>, enter it, and create a file named <code>Hello.txt</code>.</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir &quot;my folder&quot; &amp; cd &quot;my folder&quot; &amp; type nul &gt; hello.txt,md &quot;my folder&quot; &amp; cd &quot;my folder&quot; &amp; type nul &gt; hello.txt,mkdir &quot;my folder&quot; &amp; cd &quot;my folder&quot; &amp; echo. &gt; hello.txt,md &quot;my folder&quot; &amp; cd &quot;my folder&quot; &amp; echo. &gt; hello.txt" aria-label="Extreme command 03 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">C04</span><span class="level expert">Extreme</span></div>
+              <p>Write the commands needed to create a folder named <code>Data</code>, enter it, create a file named <code>Hello.txt</code>, and write the text <code>ready</code> into it.</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir data &amp; cd data &amp; echo ready &gt; hello.txt,md data &amp; cd data &amp; echo ready &gt; hello.txt,mkdir data &amp; cd data &amp; set /p =ready &lt; nul &gt; hello.txt,md data &amp; cd data &amp; set /p =ready &lt; nul &gt; hello.txt" aria-label="Extreme command 04 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+            <div class="quiz">
+              <div class="quiz-top"><span class="question-id">C05</span><span class="level expert">Extreme</span></div>
+              <p>Write the commands needed to create a folder named <code>Temp</code>, enter it, create a subfolder named <code>Inner</code>, enter it, and create a file named <code>Hello.txt</code>.</p>
+              <div class="answer-row">
+                <input class="answer-input" type="text" data-answers="mkdir temp &amp; cd temp &amp; mkdir inner &amp; cd inner &amp; type nul &gt; hello.txt,md temp &amp; cd temp &amp; md inner &amp; cd inner &amp; type nul &gt; hello.txt,mkdir temp &amp; cd temp &amp; mkdir inner &amp; cd inner &amp; echo. &gt; hello.txt,md temp &amp; cd temp &amp; md inner &amp; cd inner &amp; echo. &gt; hello.txt" aria-label="Extreme command 05 answer">
+                <button class="secondary" type="button" data-check>Check</button>
+              </div>
+              <p class="feedback" aria-live="polite"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz wide-quiz">
+          <button class="button" type="button" id="check-all">Check all answers</button>
+        </div>
+      </section>
+
+      <section class="course-section" id="sources" data-searchable>
+        <div class="section-head">
+          <div><p class="eyebrow">Keep learning</p><h2>Official references and local truth</h2></div>
+          <span class="level reference">Sources</span>
+        </div>
+        <article class="reference" data-searchable data-keywords="microsoft learn command reference official help /? documentation cmd for set setlocal">
+          <p>Windows changes, optional components vary, and every command has its own semantics. Keep this offline guide as your map, then verify the installed system:</p>
+          <ul>
+            <li><code>help</code> — lists commands recognized by your local Command Prompt.</li>
+            <li><code>help for</code> and <code>help if</code> — internal command details.</li>
+            <li><code>robocopy /?</code>, <code>schtasks /?</code>, and similar — tool-specific syntax from the installed version.</li>
+            <li><a href="https://learn.microsoft.com/windows-server/administration/windows-commands/windows-commands">Microsoft Learn: Windows commands reference</a> — current official web reference.</li>
+            <li><a href="Documentation.html">Documentation.html</a> — how this two-page offline package is organized and maintained.</li>
+          </ul>
+          <p>This manual intentionally teaches the durable language and workflow rather than pretending every version-specific Windows executable has one timeless syntax. When correctness matters, treat <code>/?</code> and the official command reference as authoritative.</p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    LearnBatch offline field manual &mdash; keep this file beside <a href="Documentation.html">Documentation.html</a>. Designed to work from a folder, USB drive, or archive without a server or dependency.
+  </footer>
+
+  <script>
+    (function () {
+      const search = document.getElementById('search');
+      const result = document.getElementById('filter-result');
+      const items = Array.from(document.querySelectorAll('[data-searchable]'));
+
+      search.addEventListener('input', function () {
+        const query = search.value.trim().toLowerCase();
+        let visible = 0;
+        items.forEach(function (item) {
+          const haystack = (item.textContent + ' ' + (item.dataset.keywords || '')).toLowerCase();
+          const match = !query || haystack.includes(query);
+          item.classList.toggle('filtered', !match);
+          if (match && item.matches('.lesson, .reference')) visible += 1;
+        });
+        result.textContent = query ? (visible + ' matching lesson' + (visible === 1 ? '' : 's') + '.') : 'Showing the complete manual.';
+      });
+
+      document.querySelectorAll('.copy').forEach(function (button) {
+        button.addEventListener('click', async function () {
+          const code = button.closest('.codebox').querySelector('code').textContent;
+          try {
+            await navigator.clipboard.writeText(code);
+            button.textContent = 'Copied';
+          } catch (error) {
+            button.textContent = 'Select code';
+          }
+          window.setTimeout(function () { button.textContent = 'Copy'; }, 1400);
+        });
+      });
+
+      const status = document.getElementById('exam-status');
+      const quizInputs = Array.from(document.querySelectorAll('.answer-input'));
+      const checkAll = document.getElementById('check-all');
+      let score = 0;
+      const normalized = function (value) {
+        return value.trim().toLowerCase().replace(/\s+/g, ' ');
+      };
+      const updateStatus = function () {
+        if (status) {
+          status.textContent = 'Correct answers: ' + score + ' / ' + quizInputs.length + '.';
+        }
+      };
+      const evaluateInput = function (input) {
+        const feedback = input.closest('.quiz').querySelector('.feedback');
+        const answers = (input.dataset.answers || '').split(',').map(function (answer) {
+          return normalized(answer);
+        }).filter(Boolean);
+        const guess = normalized(input.value);
+        const correct = answers.includes(guess);
+        feedback.className = 'feedback ' + (correct ? 'good' : 'try');
+        feedback.textContent = correct ? 'Correct — well done.' : 'Not yet. Try again or review the lesson.';
+        if (correct && input.dataset.answeredCorrectly !== 'true') {
+          input.dataset.answeredCorrectly = 'true';
+          score += 1;
+          updateStatus();
+        }
+        if (!correct) {
+          input.dataset.answeredCorrectly = 'false';
+        }
+      };
+
+      quizInputs.forEach(function (input) {
+        const button = input.closest('.answer-row').querySelector('[data-check]');
+        button.addEventListener('click', function () {
+          evaluateInput(input);
+        });
+        input.addEventListener('keydown', function (event) {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            evaluateInput(input);
+          }
+        });
+      });
+
+      if (checkAll) {
+        checkAll.addEventListener('click', function () {
+          quizInputs.forEach(function (input) {
+            evaluateInput(input);
+          });
+        });
+      }
+
+      updateStatus();
+    }());
+  </script>
+</body>
+</html>
